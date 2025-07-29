@@ -1,0 +1,46 @@
+### Frontend (React, Node.js) ###
+node_modules/
+dist/
+.env
+.vite/
+*.log
+
+
+### Backend (Spring Boot, Gradle) ###
+.gradle/
+build/
+out/
+*.class
+*.jar
+*.war
+*.iml
+*.db
+
+
+
+### IDE 관련 (IntelliJ, VSCode, Eclipse 등) ###
+.idea/
+*.iws
+*.ipr
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+.factorypath
+.sts4-cache
+.springBeans
+bin/
+.apt_generated
+
+
+### macOS ###
+
+.DS_Store
+
+
+### Test artifacts (예: JUnit, coverage) ###
+
+/coverage/
+*.lcov
+/test-output/
