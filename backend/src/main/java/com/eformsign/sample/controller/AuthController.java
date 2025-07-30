@@ -7,6 +7,7 @@ import com.eformsign.sample.security.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +54,22 @@ public class AuthController {
         response.put("email", account.getEmail());
         response.put("name", account.getName());
 
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refresh_token");
+
+        if (!StringUtils.hasText(refreshToken) || !jwtProvider.isRefreshTokenValid(refreshToken)) {
+            return ResponseEntity.status(401).body("Invalid or expired refresh token");
+        }
+
+        String email = jwtProvider.getEmailFromToken(refreshToken);
+        String newAccessToken = jwtProvider.createAccessToken(email);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("access_token", newAccessToken);
         return ResponseEntity.ok(response);
     }
 }

@@ -54,4 +54,19 @@ public class JwtProvider {
             return false;
         }
     }
+
+    public boolean isRefreshTokenValid(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            // 리프레시 토큰인지 추가적으로 검사하려면 이 부분에 claim 넣어서 처리 가능
+            return claims.getExpiration().after(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
 }
