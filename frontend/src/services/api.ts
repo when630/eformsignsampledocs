@@ -17,3 +17,16 @@ export const login = async (email: string, password: string): Promise<any> => {
     throw new Error('로그인 실패');
   }
 };
+
+export const registerAccount = async ({ email, name, password }: { email: string; name: string; password: string }) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/auth/register`, {
+      email,
+      name,
+      password,
+    });
+    return response.data;
+  } catch (error: any) {
+    throw error.response?.data || '회원가입 실패';
+  }
+};

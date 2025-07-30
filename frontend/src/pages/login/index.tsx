@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './style.css'; // 스타일 파일 경로에 맞게 수정
 
 import { login } from '../../services/api'; // 상대경로로 수정
@@ -52,6 +52,9 @@ const LoginPage = () => {
         <button type="submit" className="login-button">
           로그인
         </button>
+        <div className="login-register-link">
+          계정이 없으신가요? <Link to="/register">회원가입</Link>
+        </div>
       </form>
     </div>
   );

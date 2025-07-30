@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f5f5f5;
+  background-color: #f0f8ff;
 }
 
 .login-form {
@@ -49,4 +49,20 @@
   color: red;
   font-size: 0.9rem;
   text-align: center;
+}
+
+.login-register-link {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.login-register-link a {
+  color: #0077cc;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-register-link a:hover {
+  text-decoration: underline;
 }
