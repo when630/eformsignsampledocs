@@ -57,12 +57,17 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@RequestBody Map<String, String> request) {
-        String refreshToken = request.get("refresh_token");
+    public ResponseEntity<?> refresh(@RequestHeader("Authorization") String authorizationHeader) {
+        String refreshToken = null;
+
+        if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
+            refreshToken = authorizationHeader.substring(7);
+        }
 
         if (!StringUtils.hasText(refreshToken) || !jwtProvider.isRefreshTokenValid(refreshToken)) {
-            return ResponseEntity.status(401).body("Invalid or expired refresh token");
+            return ResponseEntity.status(401).body("Invalid refresh token");
         }
 
         String email = jwtProvider.getEmailFromToken(refreshToken);
@@ -70,6 +75,8 @@ public class AuthController {
 
         Map<String, Object> response = new HashMap<>();
         response.put("access_token", newAccessToken);
+        response.put("refresh_token", refreshToken); // 기존 리프레시 토큰 그대로 유지
+
         return ResponseEntity.ok(response);
     }
 }

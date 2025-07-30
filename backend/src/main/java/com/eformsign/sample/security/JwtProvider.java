@@ -63,8 +63,9 @@ public class JwtProvider {
                     .parseClaimsJws(token)
                     .getBody();
 
-            // 리프레시 토큰인지 추가적으로 검사하려면 이 부분에 claim 넣어서 처리 가능
-            return claims.getExpiration().after(new Date());
+            // refresh_token은 만료일만 확인하면 충분함
+            Date expiration = claims.getExpiration();
+            return expiration.after(new Date());
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
