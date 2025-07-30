@@ -1,10 +1,11 @@
+// pages/login/index.tsx
 import React from 'react';
+import './style.css'; // 같은 폴더 내 CSS
 
 const MainPage = () => {
   return (
-    <div>
-      <h1>메인 페이지</h1>
-      {/* 여기에 로그인 폼 들어갈 예정 */}
+    <div className="login-container">
+      <h1 className="login-title">메인 화면</h1>
     </div>
   );
 };

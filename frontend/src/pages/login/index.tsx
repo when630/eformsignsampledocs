@@ -1,30 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './style.css';
-import { login } from '../../services/api'; // 상대경로 확인
+import './style.css'; // 스타일 파일 경로에 맞게 수정
+
+import { login } from '../../services/api'; // 상대경로로 수정
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg('');
-
     try {
-      const result = await login(email, password);
-      console.log('로그인 성공:', result);
+      const res = await login(email, password);
+      console.log('✅ 로그인 성공:', res);
 
-      // 로컬스토리지에 토큰 저장
-      localStorage.setItem('access_token', result.access_token);
-      localStorage.setItem('refresh_token', result.refresh_token);
+      // 토큰 저장 (예: localStorage)
+      localStorage.setItem('access_token', res.access_token);
+      localStorage.setItem('refresh_token', res.refresh_token);
 
+      // 메인 페이지로 이동
       navigate('/');
     } catch (err: any) {
-      console.error('로그인 실패:', err);
-      setErrorMsg(typeof err === 'string' ? err : '로그인에 실패했습니다.');
+      console.error('❌ 로그인 실패:', err);
+      setErrorMessage(typeof err === 'string' ? err : '로그인 실패');
     }
   };
 
@@ -32,6 +32,7 @@ const LoginPage = () => {
     <div className="login-wrapper">
       <form className="login-form" onSubmit={handleLogin}>
         <h2 className="login-title">로그인</h2>
+        {errorMessage && <p className="login-error">{errorMessage}</p>}
         <input
           type="email"
           placeholder="이메일"
@@ -48,7 +49,6 @@ const LoginPage = () => {
           className="login-input"
           required
         />
-        {errorMsg && <div className="login-error">{errorMsg}</div>}
         <button type="submit" className="login-button">
           로그인
         </button>
