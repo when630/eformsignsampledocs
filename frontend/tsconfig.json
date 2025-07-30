@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",                        // 최신 JS로 트랜스파일
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],  // 브라우저 API + 최신 JS
+    "allowJs": true,                           // JS 파일도 허용
+    "skipLibCheck": true,                      // @types 오류 무시
+    "esModuleInterop": true,                   // CommonJS 호환성
+    "allowSyntheticDefaultImports": true,
+    "strict": true,                            // 엄격한 타입 검사
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,                 // JSON import 허용
+    "isolatedModules": true,
+    "noEmit": true,                            // 빌드시 JS 파일 생성 X (Vite/CRA 사용 시)
+    "jsx": "react-jsx",                        // React 17+ JSX 변환
+    "baseUrl": "./src",                        // 루트 기준 import 설정
+    "paths": {
+      "@components/*": ["components/*"],
+      "@pages/*": ["pages/*"],
+      "@services/*": ["services/*"],
+      "@utils/*": ["utils/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
