@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.util.StringUtils;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -78,5 +81,25 @@ public class AuthController {
         response.put("refresh_token", refreshToken); // 기존 리프레시 토큰 그대로 유지
 
         return ResponseEntity.ok(response);
+    }
+
+
+
+    @GetMapping("/me")
+    public ResponseEntity<?> me(Authentication authentication) {
+        System.out.println("현재 인증 객체: " + authentication);
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("인증된 사용자 없음");
+        }
+
+        Object principal = authentication.getPrincipal();
+        System.out.println(">> Principal: " + principal);
+
+        if (principal instanceof org.springframework.security.core.userdetails.User userDetails) {
+            return ResponseEntity.ok(Map.of("email", userDetails.getUsername()));
+        } else {
+            return ResponseEntity.status(401).body("올바르지 않은 사용자 정보");
+        }
     }
 }

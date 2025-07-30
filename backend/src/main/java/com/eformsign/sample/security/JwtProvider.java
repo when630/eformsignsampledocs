@@ -51,6 +51,7 @@ public class JwtProvider {
             Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
+            System.out.println("토큰 유효성 실패: " + e.getMessage());
             return false;
         }
     }
@@ -67,6 +68,7 @@ public class JwtProvider {
             Date expiration = claims.getExpiration();
             return expiration.after(new Date());
         } catch (JwtException | IllegalArgumentException e) {
+            System.out.println("토큰 유효성 실패: " + e.getMessage());
             return false;
         }
     }
