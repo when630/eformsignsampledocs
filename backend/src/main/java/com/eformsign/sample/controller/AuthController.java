@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.util.StringUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.Authentication;
+import com.eformsign.sample.dto.RegisterRequest;
 
 
 import java.util.HashMap;
@@ -94,5 +96,31 @@ public class AuthController {
         } else {
             return ResponseEntity.status(401).body("올바르지 않은 사용자 정보");
         }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        System.out.println("=== 회원가입 시도 ===");
+        System.out.println("이메일: " + request.getEmail());
+
+        boolean exists = accountRepository.findByEmail(request.getEmail()).isPresent();
+        if (exists) {
+            return ResponseEntity.status(409).body("이미 존재하는 이메일입니다.");
+        }
+
+        Account newAccount = new Account();
+        newAccount.setEmail(request.getEmail());
+        newAccount.setName(request.getName());
+        newAccount.setPassword(request.getPassword()); // 추후 암호화 예정
+
+        accountRepository.save(newAccount);
+
+        return ResponseEntity.status(201).body("회원가입 성공");
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        System.out.println("로그아웃 요청됨");
+        return ResponseEntity.ok(Map.of("message", "로그아웃 완료. 클라이언트에서 토큰을 삭제해주세요."));
     }
 }
