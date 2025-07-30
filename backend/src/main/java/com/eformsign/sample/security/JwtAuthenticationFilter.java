@@ -5,16 +5,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.io.IOException;
-import java.util.List;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -31,7 +29,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-        System.out.println("✅ JwtAuthenticationFilter invoked: " + request.getRequestURI());
+
+        System.out.println("✅ JwtAuthenticationFilter invoked: " + request.getMethod() + " " + request.getRequestURI());
+
+        // ✅ OPTIONS 요청은 바로 통과
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String uri = request.getRequestURI();
         if (uri.equals("/api/auth/login") || uri.equals("/api/auth/refresh")) {
@@ -52,9 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             userDetails, null, userDetails.getAuthorities()
                     );
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            System.out.println(">> 인증 시도 전 SecurityContext: " + SecurityContextHolder.getContext().getAuthentication());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println(">> 인증 완료 후 SecurityContext: " + SecurityContextHolder.getContext().getAuthentication());
             System.out.println(">> SecurityContext 저장됨: " + SecurityContextHolder.getContext().getAuthentication());
         } else {
             System.out.println(">> 토큰이 없거나 유효하지 않음");
@@ -66,7 +69,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String extractToken(HttpServletRequest request) {
         String bearer = request.getHeader("Authorization");
         if (StringUtils.hasText(bearer) && bearer.startsWith("Bearer ")) {
-            return bearer.substring(7); // "Bearer " 제거
+            return bearer.substring(7);
         }
         return null;
     }
