@@ -1,0 +1,51 @@
+/* src/pages/register/register.css */
+.register-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f8ff;
+}
+
+.register-form {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  width: 340px;
+}
+
+.register-title {
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #0077cc;
+}
+
+.register-input {
+  width: 92%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+}
+
+.register-button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.register-button:hover {
+  background-color: #005fa3;
+}
+
+.register-error {
+  color: red;
+  text-align: center;
+  margin-bottom: 1rem;
+}

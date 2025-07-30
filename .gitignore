@@ -44,4 +44,3 @@ bin/
 /coverage/
 *.lcov
 /test-output/
-frontend
