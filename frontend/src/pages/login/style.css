@@ -1,68 +1,65 @@
 .login-wrapper {
-  height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  background-color: #f0f8ff;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f8ff; /* 연한 파랑 배경 */
 }
 
 .login-form {
-  background: #fff;
+  background-color: #ffffff;
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 360px;
-  display: flex;
-  flex-direction: column;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  width: 340px;
 }
 
 .login-title {
   margin-bottom: 1.5rem;
-  font-size: 1.6rem;
-  font-weight: bold;
   text-align: center;
+  color: #0077cc; /* 파랑 계열 제목 색 */
 }
 
 .login-input {
-  padding: 0.75rem 1rem;
+  width: 92%;
+  padding: 0.75rem;
   margin-bottom: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #cccccc;
   border-radius: 6px;
-  font-size: 1rem;
 }
 
 .login-button {
-  padding: 0.75rem 1rem;
-  background-color: #0056b3;
-  color: #fff;
-  font-weight: bold;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #0077cc;
+  color: white;
   border: none;
   border-radius: 6px;
+  font-weight: bold;
   cursor: pointer;
 }
 
 .login-button:hover {
-  background-color: #004999;
+  background-color: #005fa3;
 }
 
 .login-error {
   color: red;
-  font-size: 0.9rem;
   text-align: center;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
 }
 
-.login-register-link {
-  text-align: center;
+.register-link {
   margin-top: 1rem;
-  font-size: 0.9rem;
-}
-
-.login-register-link a {
+  text-align: right;
   color: #0077cc;
-  text-decoration: none;
-  font-weight: bold;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
-.login-register-link a:hover {
-  text-decoration: underline;
+.register-link:hover {
+  color: #005fa3;
 }

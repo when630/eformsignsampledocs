@@ -1,25 +1,18 @@
 package com.eformsign.sample.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
 @Entity
-@Table(name = "account")
+@Data
 public class Account {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 100)
     private String email;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Column(length = 50)
     private String name;
+    private String password;
+    private String apiKey;
+    private String secretKey;
 }
