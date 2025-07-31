@@ -1,24 +1,24 @@
-// src/pages/register/index.tsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './style.css';
-import { registerAccount } from '../../services/api';
+import { useNavigate } from 'react-router-dom';
+import { register } from '../../services/api';
 
 const RegisterPage = () => {
-  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [apiKey, setApiKey] = useState('');
+  const [secretKey, setSecretKey] = useState('');
+  const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await registerAccount({ email, name, password });
-      alert('회원가입이 완료되었습니다.'); 
+      await register({ email, name, password, apiKey, secretKey });
+      alert('회원가입 성공!');
       navigate('/login');
     } catch (err: any) {
-      setError(err.message || '회원가입 실패');
+      alert('회원가입 실패: ' + err?.response?.data || err.message);
     }
   };
 
@@ -26,32 +26,47 @@ const RegisterPage = () => {
     <div className="register-wrapper">
       <form className="register-form" onSubmit={handleRegister}>
         <h2 className="register-title">회원가입</h2>
-        {error && <div className="register-error">{error}</div>}
         <input
+          className="register-input"
           type="email"
           placeholder="이메일"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="register-input"
           required
         />
         <input
+          className="register-input"
           type="text"
           placeholder="이름"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="register-input"
           required
         />
         <input
+          className="register-input"
           type="password"
           placeholder="비밀번호"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="register-input"
           required
         />
-        <button type="submit" className="register-button">가입하기</button>
+        <input
+          className="register-input"
+          type="text"
+          placeholder="API Key"
+          value={apiKey}
+          onChange={(e) => setApiKey(e.target.value)}
+          required
+        />
+        <input
+          className="register-input"
+          type="text"
+          placeholder="Secret Key"
+          value={secretKey}
+          onChange={(e) => setSecretKey(e.target.value)}
+          required
+        />
+        <button type="submit" className="register-button">회원가입</button>
       </form>
     </div>
   );

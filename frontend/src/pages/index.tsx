@@ -1,6 +1,6 @@
-// pages/login/index.tsx
+// pages/index.tsx
 import React from 'react';
-import './style.css'; // 같은 폴더 내 CSS
+import './style.css';
 
 const MainPage = () => {
   return (
