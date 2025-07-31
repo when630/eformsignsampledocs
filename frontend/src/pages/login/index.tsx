@@ -1,3 +1,4 @@
+// src/pages/login/index.tsx
 import React, { useState } from 'react';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +7,7 @@ import { login } from '../../services/api';
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -13,10 +15,10 @@ const LoginPage = () => {
     try {
       const res = await login(email, password);
       localStorage.setItem('access_token', res.access_token);
-      alert('로그인 성공');
+      setError('');
       navigate('/');
     } catch (err: any) {
-      alert('로그인 실패: ' + err?.response?.data || err.message);
+      setError('이메일 또는 비밀번호가 잘못되었습니다.');
     }
   };
 
@@ -24,24 +26,30 @@ const LoginPage = () => {
     <div className="login-wrapper">
       <form className="login-form" onSubmit={handleSubmit}>
         <h2 className="login-title">로그인</h2>
+
         <input
           className="login-input"
           type="email"
-          placeholder="이메일"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          required
+          placeholder="이메일"
         />
         <input
           className="login-input"
           type="password"
-          placeholder="비밀번호"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
+          placeholder="비밀번호"
         />
-        <button type="submit" className="login-button">로그인</button>
-        <p className="register-link" onClick={() => navigate('/register')}>회원가입</p>
+
+        {error && <p className="login-error">{error}</p>}
+
+        <button className="login-button" type="submit">
+          로그인
+        </button>
+        <p className="register-link" onClick={() => navigate('/register')}>
+          회원가입
+        </p>
       </form>
     </div>
   );
