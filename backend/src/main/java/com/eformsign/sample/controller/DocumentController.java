@@ -64,4 +64,25 @@ public class DocumentController {
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(resource);
     }
+
+    /**
+     * 5. 문서 다운로드
+     */
+    @GetMapping("/download/{id}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long id) throws MalformedURLException {
+        Document document = documentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 문서 없음: id=" + id));
+
+        String filePath = storageRepository.findById(document.getStorageId())
+                .orElseThrow(() -> new IllegalArgumentException("Storage 없음: id=" + document.getStorageId()))
+                .getPath();
+
+        Resource resource = new UrlResource(Paths.get(filePath).toUri());
+
+        String fileName = document.getTitle() + ".pdf"; // 필요에 따라 확장자 조정
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+    }
 }

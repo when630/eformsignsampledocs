@@ -15,4 +15,5 @@ public class Account {
     private String password;
     private String apiKey;
     private String secretKey;
+    private String company_id;
 }
