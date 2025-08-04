@@ -15,10 +15,14 @@ import java.nio.file.StandardCopyOption;
 public class ThumbnailUtil {
 
     private static final File THUMBNAIL_DIR = new File("backend/data/thumbnails");
+    private static final File CONVERTED_PDF_DIR = new File("backend/data/converted_pdfs");
 
     static {
         if (!THUMBNAIL_DIR.exists()) {
             THUMBNAIL_DIR.mkdirs();
+        }
+        if (!CONVERTED_PDF_DIR.exists()) {
+            CONVERTED_PDF_DIR.mkdirs();
         }
     }
 
@@ -55,8 +59,8 @@ public class ThumbnailUtil {
             return thumbnailFile;
         }
 
-        // 문서명 기반 PDF 경로 생성 (중복 방지)
-        File pdfFile = new File(docxFile.getParentFile(), baseName + ".pdf");
+        // 변환된 PDF 파일 경로 (converted_pdfs 디렉토리)
+        File pdfFile = new File(CONVERTED_PDF_DIR, baseName + ".pdf");
 
         // PDF 없으면 생성
         if (!pdfFile.exists()) {
@@ -72,9 +76,8 @@ public class ThumbnailUtil {
      * LibreOffice로 DOCX → PDF 변환
      */
     public static void convertDocxToPdf(File docxFile, File outputPdf) throws IOException, InterruptedException {
-        String libreOfficePath = "libreoffice"; // 시스템 PATH에 등록되어 있는 경우
         ProcessBuilder pb = new ProcessBuilder(
-                libreOfficePath,
+                "libreoffice",
                 "--headless",
                 "--convert-to", "pdf",
                 "--outdir", outputPdf.getParent(),
@@ -102,6 +105,7 @@ public class ThumbnailUtil {
             throw new FileNotFoundException("LibreOffice가 PDF 파일을 생성하지 못했습니다: " + convertedPdf.getAbsolutePath());
         }
 
+        // rename → 지정한 outputPdf 이름으로 이동
         Files.move(convertedPdf.toPath(), outputPdf.toPath(), StandardCopyOption.REPLACE_EXISTING);
         log.info("DOCX → PDF 변환 완료: {}", outputPdf.getAbsolutePath());
     }
