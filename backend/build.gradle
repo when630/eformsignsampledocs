@@ -43,16 +43,19 @@ dependencies {
 
 	// PDF/Word 처리
 	implementation 'org.apache.pdfbox:pdfbox:3.0.1'
-	implementation 'org.apache.pdfbox:fontbox:3.0.1'
-	implementation 'org.apache.pdfbox:xmpbox:3.0.1'
-	implementation 'org.apache.pdfbox:pdfbox-io:3.0.1'
 	implementation 'org.docx4j:docx4j-core:11.5.4'
 	implementation 'org.docx4j:docx4j-export-fo:11.5.4'
 	implementation 'org.apache.xmlgraphics:fop:2.9'
+	implementation 'org.apache.xmlgraphics:xmlgraphics-commons:2.9'
+
+	// JAXB
+	implementation 'org.docx4j:docx4j-JAXB-ReferenceImpl:11.5.4'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
+	implementation 'org.glassfish.jaxb:jaxb-core:3.0.2'
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
 
 	// 유틸
 	implementation 'commons-io:commons-io:2.15.1'
-	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
 	// 보안 패치 대응
 	implementation 'org.apache.commons:commons-compress:1.26.0'
@@ -71,7 +74,7 @@ configurations.all {
 	resolutionStrategy {
 		force 'commons-io:commons-io:2.15.1'
 		force 'org.apache.commons:commons-compress:1.26.0'
-		force 'org.apache.commons:commons-lang3:3.14.1'
+		force 'org.apache.commons:commons-lang3:3.14.0'
 	}
 }
 
