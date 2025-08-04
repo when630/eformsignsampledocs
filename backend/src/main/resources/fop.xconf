@@ -1,16 +1,11 @@
-<?xml version="1.0"?>
 <fop version="1.0">
   <renderers>
     <renderer mime="application/pdf">
       <fonts>
+        <directory>/Users/when630/Library/Fonts</directory>
         <auto-detect>true</auto-detect>
-        <directory>/System/Library/Fonts</directory>
-        <directory>/Library/Fonts</directory>
-        <font embed-url="/Library/Fonts/AppleGothic.ttf" embedding-mode="subset">
-          <font-triplet name="AppleGothic" style="normal" weight="normal"/>
-        </font>
-        <font embed-url="/Library/Fonts/NanumGothic.ttf" embedding-mode="subset">
-          <font-triplet name="NanumGothic" style="normal" weight="normal"/>
+        <font embed-url="/Users/when630/Library/Fonts/NotoSansKR-VariableFont_wght.ttf" embedding-mode="subset">
+          <font-triplet name="NotoSansKR" style="normal" weight="normal"/>
         </font>
       </fonts>
     </renderer>

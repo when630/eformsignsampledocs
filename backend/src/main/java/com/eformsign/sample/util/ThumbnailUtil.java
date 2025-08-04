@@ -1,72 +1,115 @@
 package com.eformsign.sample.util;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.fop.apps.FopFactory;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
-import org.docx4j.Docx4J;
-import org.docx4j.convert.out.FOSettings;
-import org.docx4j.fonts.IdentityPlusMapper;
-import org.docx4j.fonts.Mapper;
-import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 @Slf4j
 public class ThumbnailUtil {
 
+    private static final File THUMBNAIL_DIR = new File("backend/data/thumbnails");
+
+    static {
+        if (!THUMBNAIL_DIR.exists()) {
+            THUMBNAIL_DIR.mkdirs();
+        }
+    }
+
+    /**
+     * PDF 썸네일 생성 (없으면 만들고, 있으면 반환)
+     */
     public static File generatePdfThumbnail(File pdfFile) throws IOException {
+        String baseName = getSafeBaseName(pdfFile.getName(), ".pdf");
+        File output = new File(THUMBNAIL_DIR, baseName + ".jpg");
+
+        if (output.exists()) {
+            log.info("이미 존재하는 PDF 썸네일 반환: {}", output.getAbsolutePath());
+            return output;
+        }
+
         try (PDDocument document = Loader.loadPDF(pdfFile)) {
             PDFRenderer renderer = new PDFRenderer(document);
-            BufferedImage image = renderer.renderImageWithDPI(0, 150); // 첫 페이지
-            File output = File.createTempFile("thumb_", ".jpg");
+            BufferedImage image = renderer.renderImageWithDPI(0, 150);
             ImageIO.write(image, "jpg", output);
+            log.info("새 PDF 썸네일 생성 완료: {}", output.getAbsolutePath());
             return output;
         }
     }
 
+    /**
+     * DOCX 썸네일 생성 (없으면 생성)
+     */
     public static File generateDocxThumbnail(File docxFile) throws Exception {
-        // fop.xconf 로드
-        InputStream configStream = ThumbnailUtil.class.getClassLoader().getResourceAsStream("fop.xconf");
-        if (configStream == null) {
-            throw new FileNotFoundException("fop.xconf not found in resources");
+        String baseName = getSafeBaseName(docxFile.getName(), ".docx");
+        File thumbnailFile = new File(THUMBNAIL_DIR, baseName + ".jpg");
+
+        if (thumbnailFile.exists()) {
+            log.info("이미 존재하는 DOCX 썸네일 반환: {}", thumbnailFile.getAbsolutePath());
+            return thumbnailFile;
         }
 
-        // 임시 파일로 복사
-        Path tempConfigPath = Files.createTempFile("fop", ".xconf");
-        Files.copy(configStream, tempConfigPath, StandardCopyOption.REPLACE_EXISTING);
+        // 문서명 기반 PDF 경로 생성 (중복 방지)
+        File pdfFile = new File(docxFile.getParentFile(), baseName + ".pdf");
 
-        File pdfFile = File.createTempFile("converted_", ".pdf");
-        convertDocxToPdf(docxFile, tempConfigPath.toFile(), pdfFile);
+        // PDF 없으면 생성
+        if (!pdfFile.exists()) {
+            convertDocxToPdf(docxFile, pdfFile);
+        } else {
+            log.info("이미 존재하는 PDF 사용: {}", pdfFile.getAbsolutePath());
+        }
 
         return generatePdfThumbnail(pdfFile);
     }
 
-    public static void convertDocxToPdf(File docxFile, File configFile, File pdfFile) throws Exception {
-        WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(docxFile);
+    /**
+     * LibreOffice로 DOCX → PDF 변환
+     */
+    public static void convertDocxToPdf(File docxFile, File outputPdf) throws IOException, InterruptedException {
+        String libreOfficePath = "libreoffice"; // 시스템 PATH에 등록되어 있는 경우
+        ProcessBuilder pb = new ProcessBuilder(
+                libreOfficePath,
+                "--headless",
+                "--convert-to", "pdf",
+                "--outdir", outputPdf.getParent(),
+                docxFile.getAbsolutePath()
+        );
+        pb.redirectErrorStream(true);
 
-        // 한글 폰트 매퍼
-        Mapper fontMapper = new IdentityPlusMapper();
-        wordMLPackage.setFontMapper(fontMapper);
-
-        FOSettings foSettings = Docx4J.createFOSettings();
-        foSettings.setWmlPackage(wordMLPackage);
-
-        // FopFactory 생성 (주의: InputStream 사용)
-        try (InputStream configInput = new FileInputStream(configFile)) {
-            FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI(), configInput);
-            foSettings.getSettings().put("fopFactory", fopFactory);
+        Process process = pb.start();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                log.debug("[LibreOffice] {}", line);
+            }
         }
 
-        // PDF 생성
-        try (OutputStream os = new FileOutputStream(pdfFile)) {
-            Docx4J.toFO(foSettings, os, Docx4J.FLAG_EXPORT_PREFER_XSL);
+        int exitCode = process.waitFor();
+        if (exitCode != 0) {
+            throw new RuntimeException("LibreOffice PDF 변환 실패 (코드: " + exitCode + ")");
         }
+
+        String convertedName = docxFile.getName().replaceAll("\\.docx$", ".pdf");
+        File convertedPdf = new File(outputPdf.getParentFile(), convertedName);
+
+        if (!convertedPdf.exists()) {
+            throw new FileNotFoundException("LibreOffice가 PDF 파일을 생성하지 못했습니다: " + convertedPdf.getAbsolutePath());
+        }
+
+        Files.move(convertedPdf.toPath(), outputPdf.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        log.info("DOCX → PDF 변환 완료: {}", outputPdf.getAbsolutePath());
+    }
+
+    /**
+     * 파일 이름에서 확장자 제거 및 안전한 이름 반환
+     */
+    private static String getSafeBaseName(String filename, String extension) {
+        return filename.replaceAll(extension + "$", "").replaceAll("\\s+", "_");
     }
 }
