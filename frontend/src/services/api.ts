@@ -21,6 +21,7 @@ export const register = async (data: {
   password: string;
   apiKey: string;
   secretKey: string;
+  company_id: string;
 }) => {
   const response = await axios.post(`${BASE_URL}/auth/register`, data);
   return response.data;

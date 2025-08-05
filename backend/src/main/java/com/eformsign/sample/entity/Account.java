@@ -10,9 +10,12 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String email;
+
     private String name;
     private String password;
     private String apiKey;
     private String secretKey;
+    private String company_id;
 }

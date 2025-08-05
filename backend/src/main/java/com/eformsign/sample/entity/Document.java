@@ -18,7 +18,7 @@ public class Document {
 
     private Long categoryId;
 
-    @Column(name = "storage_id", nullable = true)
+    @Column(name = "storage_id")
     private Long storageId;
 
     private String uploaderName;

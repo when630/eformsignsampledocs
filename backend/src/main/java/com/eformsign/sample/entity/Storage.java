@@ -19,7 +19,7 @@ public class Storage {
     private Long id;
 
     @Column(nullable = false)
-    private Integer size;
+    private Long size;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String path;

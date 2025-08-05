@@ -15,9 +15,16 @@ java {
 
 repositories {
 	mavenCentral()
+	maven {
+		url "https://repo.docx4java.org/docx4j"
+		content {
+			includeGroup "org.docx4j"
+		}
+	}
 }
 
 dependencies {
+	// Spring
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -26,29 +33,47 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	// JWT 인증
+	// Core
+	implementation 'org.springframework:spring-core'
+
+	// PDF/Word 처리
+	implementation 'org.apache.pdfbox:pdfbox:3.0.1'
+	implementation 'org.docx4j:docx4j-core:11.5.4'
+	implementation 'org.apache.xmlgraphics:fop:2.6'
+	implementation 'org.apache.xmlgraphics:xmlgraphics-commons:2.9'
+
+	// JAXB
+	implementation 'org.docx4j:docx4j-JAXB-ReferenceImpl:11.5.4'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
+	implementation 'org.glassfish.jaxb:jaxb-core:3.0.2'
+	implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
+
+	// 유틸
+	implementation 'commons-io:commons-io:2.15.1'
+
+	// 보안 패치 대응
+	implementation 'org.apache.commons:commons-compress:1.26.0'
+	implementation 'org.apache.commons:commons-lang3:3.14.0'
+
+	// JWT
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-	// Excel 파일 처리
-	implementation 'org.apache.poi:poi:5.2.5'
-	implementation 'org.apache.poi:poi-ooxml:5.2.5'
-
-	// 보안 패치 대응용 강제 종속성
-	implementation 'commons-io:commons-io:2.15.1'
-	implementation 'org.apache.commons:commons-compress:1.26.0'
-	implementation 'org.apache.commons:commons-lang3:3.13.0'
+	// 로컬 JAR
+	implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 configurations.all {
 	resolutionStrategy {
 		force 'commons-io:commons-io:2.15.1'
 		force 'org.apache.commons:commons-compress:1.26.0'
-		force 'org.apache.commons:commons-lang3:3.14.1'
+		force 'org.apache.commons:commons-lang3:3.14.0'
 	}
 }
 

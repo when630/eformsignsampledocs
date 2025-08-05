@@ -9,12 +9,13 @@ const RegisterPage = () => {
   const [password, setPassword] = useState('');
   const [apiKey, setApiKey] = useState('');
   const [secretKey, setSecretKey] = useState('');
+  const [company_id, setCompany_id] = useState('');
   const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await register({ email, name, password, apiKey, secretKey });
+      await register({ email, name, password, apiKey, secretKey, company_id });
       alert('회원가입 성공!');
       navigate('/login');
     } catch (err: any) {
@@ -64,6 +65,14 @@ const RegisterPage = () => {
           placeholder="Secret Key"
           value={secretKey}
           onChange={(e) => setSecretKey(e.target.value)}
+          required
+        />
+        <input
+          className="register-input"
+          type="text"
+          placeholder="Company ID"
+          value={company_id}
+          onChange={(e) => setCompany_id(e.target.value)}
           required
         />
         <button type="submit" className="register-button">회원가입</button>
