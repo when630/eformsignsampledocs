@@ -116,4 +116,26 @@ public class ThumbnailUtil {
     private static String getSafeBaseName(String filename, String extension) {
         return filename.replaceAll(extension + "$", "").replaceAll("\\s+", "_");
     }
+
+    public static File getOrConvertDocxToPdf(File docxFile, File outputPdf) throws IOException, InterruptedException {
+        if (outputPdf.exists()) {
+            return outputPdf;
+        }
+
+        ProcessBuilder pb = new ProcessBuilder(
+                "libreoffice",
+                "--headless",
+                "--convert-to", "pdf",
+                "--outdir", outputPdf.getParent(),
+                docxFile.getAbsolutePath()
+        );
+        pb.redirectErrorStream(true);
+        Process process = pb.start();
+        process.waitFor();
+
+        if (!outputPdf.exists()) {
+            throw new FileNotFoundException("PDF 변환 실패: " + outputPdf.getAbsolutePath());
+        }
+        return outputPdf;
+    }
 }

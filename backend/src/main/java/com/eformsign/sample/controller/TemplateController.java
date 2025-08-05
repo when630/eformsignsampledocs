@@ -1,85 +1,83 @@
 package com.eformsign.sample.controller;
 
+import com.eformsign.sample.dto.TemplateCreateRequest;
 import com.eformsign.sample.dto.TemplateRequest;
+import com.eformsign.sample.entity.Account;
+import com.eformsign.sample.entity.Document;
+import com.eformsign.sample.entity.Storage;
+import com.eformsign.sample.entity.Token;
+import com.eformsign.sample.repository.AccountRepository;
+import com.eformsign.sample.repository.DocumentRepository;
+import com.eformsign.sample.repository.StorageRepository;
+import com.eformsign.sample.repository.TokenRepository;
+import com.eformsign.sample.service.EformsignService;
+import com.eformsign.sample.util.DocxToPdfUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/eformsign")
 public class TemplateController {
 
-    @PostMapping("/template-option")
-    public Map<String, Object> generateTemplateOption(@RequestBody TemplateRequest request) throws IOException {
-        // 1. PDF 파일을 base64로 인코딩
-        byte[] fileBytes = Files.readAllBytes(Paths.get(request.getFilePath()));
+    private final AccountRepository accountRepository;
+    private final TokenRepository tokenRepository;
+    private final DocumentRepository documentRepository;
+    private final StorageRepository storageRepository;
+    private final EformsignService eformsignService;
+
+    @PostMapping("/template-create")
+    public Map<String, Object> createTemplate(@RequestBody TemplateCreateRequest request) throws IOException, InterruptedException {
+        // 1. 계정 조회
+        String email = request.getAccountId();
+
+        Account account = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Account not found for email: " + email));
+
+        // 2. 토큰 조회
+        Token token = tokenRepository.findByAccountId(account.getId())
+                .orElseThrow(() -> new RuntimeException("Token not found"));
+
+        // 3. 문서 조회
+        Long documentId = request.getDocumentId();
+        Document document = documentRepository.findById(documentId)
+                .orElseThrow(() -> new RuntimeException("Document not found"));
+
+        // 4. 파일 경로 조회
+        Storage storage = storageRepository.findById(document.getStorageId())
+                .orElseThrow(() -> new RuntimeException("Storage not found"));
+        String filePath = storage.getPath();
+
+        // 5. docx → pdf 변환 처리
+        File file;
+        if (filePath.toLowerCase().endsWith(".docx")) {
+            file = DocxToPdfUtil.getOrConvertPdfFromDocx(new File(filePath));
+        } else {
+            file = new File(filePath);
+        }
+
+        // 6. 파일 → base64 인코딩
+        byte[] fileBytes = Files.readAllBytes(file.toPath());
         String base64File = Base64.getEncoder().encodeToString(fileBytes);
 
-        // 2. 옵션 생성
-        Map<String, Object> option = new HashMap<>();
+        // 7. TemplateRequest 구성
+        TemplateRequest templateRequest = new TemplateRequest();
+        templateRequest.setCompanyId(account.getCompany_id());
+        templateRequest.setCountryCode("ko");
+        templateRequest.setUserId(account.getEmail());
+        templateRequest.setAccessToken(token.getAccessToken());
+        templateRequest.setRefreshToken(token.getRefreshToken());
+        templateRequest.setTemplateName(request.getTemplateName());
+        templateRequest.setBase64File(base64File);
 
-        option.put("company", Map.of(
-                "id", request.getCompanyId(),
-                "country_code", request.getCountryCode(),
-                "user_key", request.getUserId()
-        ));
-
-        option.put("user", Map.of(
-                "id", request.getUserId(),
-                "access_token", request.getAccessToken(),
-                "refresh_token", request.getRefreshToken()
-        ));
-
-        option.put("mode", Map.of(
-                "type", "01", // 생성
-                "template_type", "unstructured_form"
-        ));
-
-        option.put("layout", Map.of(
-                "lang_code", "ko",
-                "header", true,
-                "footer", true
-        ));
-
-        // 수신자(step) 구성
-        List<Map<String, Object>> recipients = request.getRecipients().stream()
-                .map(id -> {
-                    Map<String, Object> recipient = new HashMap<>();
-                    recipient.put("id", id);
-                    recipient.put("name", "참여자");
-                    return recipient;
-                })
-                .collect(Collectors.toList());
-
-        Map<String, Object> step = new HashMap<>();
-        step.put("step_type", "05");
-        step.put("step_name", "참여자");
-        step.put("use_mail", true);
-        step.put("use_sms", false);
-        step.put("use_alimtalk", false);
-        step.put("recipients", recipients);
-        step.put("auth", Map.of(
-                "valid", Map.of("day", "7", "hour", "0")
-        ));
-
-        option.put("prefill", Map.of(
-                "template_name", request.getTemplateName(),
-                "step_settings", List.of(step),
-                "quick_processing", false
-        ));
-
-        option.put("template_file", Map.of(
-                "name", "upload.pdf",
-                "mime", "@file/octet-stream",
-                "data", base64File
-        ));
-
-        return option;
+        // 8. 템플릿 생성 요청
+        return eformsignService.createTemplate(templateRequest);
     }
 }

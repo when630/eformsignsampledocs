@@ -1,21 +1,27 @@
 package com.eformsign.sample.controller;
 
 import com.eformsign.sample.dto.TreeResponse;
+import com.eformsign.sample.entity.Account;
 import com.eformsign.sample.entity.Document;
 import com.eformsign.sample.entity.Storage;
 import com.eformsign.sample.repository.DocumentRepository;
 import com.eformsign.sample.repository.StorageRepository;
 import com.eformsign.sample.service.CategoryService;
+import com.eformsign.sample.service.DownloadLogService;
 import com.eformsign.sample.util.ThumbnailUtil;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
@@ -33,6 +39,7 @@ public class DocumentController {
     private final CategoryService categoryService;
     private final DocumentRepository documentRepository;
     private final StorageRepository storageRepository;
+    private final DownloadLogService downloadLogService;
 
     // 1. 카테고리 트리 조회
     @GetMapping("/tree")
@@ -92,7 +99,7 @@ public class DocumentController {
 
     // 5. 문서 다운로드
     @GetMapping("/download/{id}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable Long id) throws MalformedURLException {
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long id, @RequestParam Long accountId, HttpServletRequest request) throws MalformedURLException {
         Document document = documentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 문서 없음: id=" + id));
 
@@ -101,8 +108,11 @@ public class DocumentController {
                 .getPath();
 
         Resource resource = new UrlResource(Paths.get(filePath).toUri());
+        String fileName = document.getTitle() + ".docx";
 
-        String fileName = document.getTitle() + ".docx"; // 확장자 필요 시 동적으로
+        // 다운로드 로그 저장
+        downloadLogService.logDownload(document.getId().toString(), accountId, request);
+        
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

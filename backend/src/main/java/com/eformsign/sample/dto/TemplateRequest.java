@@ -1,7 +1,7 @@
 package com.eformsign.sample.dto;
 
 import lombok.Data;
-import java.util.List;
+
 
 @Data
 public class TemplateRequest {
@@ -12,5 +12,5 @@ public class TemplateRequest {
     private String refreshToken;
     private String templateName;
     private String filePath; // 로컬 PDF 파일 경로
-    private List<String> recipients; // 이메일 or user id
+    private String base64File;
 }
