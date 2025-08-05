@@ -56,14 +56,25 @@ public class TokenService {
         if (response.getStatusCode() == HttpStatus.OK) {
             Map<String, Object> oauth = (Map<String, Object>) response.getBody().get("oauth_token");
 
-            Token token = new Token();
+            // ✅ 토큰 존재 여부 확인 후 update or insert
+            Token token = tokenRepository.findByAccount(account)
+                    .orElse(new Token()); // 없으면 새 객체
+
             token.setAccount(account);
             token.setAccessToken((String) oauth.get("access_token"));
             token.setRefreshToken((String) oauth.get("refresh_token"));
             token.setExpiresAt(LocalDateTime.now().plusHours(1));
             tokenRepository.save(token);
 
-            return ResponseEntity.ok(oauth);
+            Map<String, Object> result = new HashMap<>();
+            result.put("token", oauth);
+            result.put("account", Map.of(
+                    "id", account.getId(),
+                    "name", account.getName(),
+                    "email", account.getEmail()
+            ));
+
+            return ResponseEntity.ok(result);
         }
 
         return ResponseEntity.status(500).body("이폼사인 토큰 발급 실패");

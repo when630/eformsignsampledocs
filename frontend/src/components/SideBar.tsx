@@ -3,7 +3,6 @@ import './SideBar.css';
 import { getCategoryTree } from '../services/api';
 import { Category } from '../utils/types';
 
-// ✅ props 타입 추가
 type Props = {
   onCategoryClick: (categoryId: number) => void;
 };
@@ -28,32 +27,35 @@ const SideBar = ({ onCategoryClick }: Props) => {
 
   return (
     <div className="sidebar">
-      <div className="title">EformSample</div>
+      <img src='logo-w@2x.png'
+            alt="이폼사인"
+            className="eformsign-logo"/>
+      <div className="title">eformSample</div>
       <div className="account-info">
         <div className="account-name">김이폼 님</div>
         <button className="refresh-btn">토큰 갱신</button>
         <button className="logout-btn">로그아웃</button>
       </div>
       <div className="menu">
-        {categories.map((category) => (
-          <div key={category.id} className="menu-item">
-            <div className="menu-title" onClick={() => toggleExpand(category.id)}>
-              {category.name}
+        {categories.map((depth1) => (
+            <div key={depth1.id} className="menu-item">
+                <div className="menu-title" onClick={() => toggleExpand(depth1.id)}>
+                {depth1.name}
+                </div>
+                {expandedIds.has(depth1.id) && depth1.children?.length > 0 && (
+                <div className="submenu">
+                    {depth1.children.map((depth2) => (
+                    <div
+                        key={depth2.id}
+                        className="submenu-item"
+                        onClick={() => onCategoryClick?.(depth2.id)}
+                    >
+                        {depth2.name}
+                    </div>
+                    ))}
+                </div>
+                )}
             </div>
-            {expandedIds.has(category.id) && category.children?.length > 0 && (
-              <div className="submenu">
-                {category.children.map((sub) => (
-                  <div
-                    key={sub.id}
-                    className="submenu-item"
-                    onClick={() => onCategoryClick(sub.id)}
-                  >
-                    {sub.name}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
         ))}
       </div>
     </div>

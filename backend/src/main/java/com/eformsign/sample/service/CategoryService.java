@@ -63,4 +63,11 @@ public class CategoryService {
         }
         return node;
     }
+
+    public List<Long> getDepth3CategoryIdsUnder(Long depth2Id) {
+        return closureRepository.findAll().stream()
+                .filter(cc -> cc.getAncestor().equals(depth2Id) && cc.getDepth() == 1)
+                .map(cc -> cc.getDescendant())
+                .collect(Collectors.toList());
+    }
 }

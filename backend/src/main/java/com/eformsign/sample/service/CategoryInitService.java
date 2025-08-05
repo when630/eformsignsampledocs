@@ -36,12 +36,12 @@ public class CategoryInitService {
 
         for (File depth1Dir : Objects.requireNonNull(rootDir.listFiles(File::isDirectory))) {
             String depth1 = depth1Dir.getName();
-            Long d1Id = ensureCategory(depth1);
+            Long d1Id = ensureCategory(depth1, 0L); // 루트는 parentId = 0L
             insertClosure(d1Id, d1Id, 0);
 
             for (File depth2Dir : Objects.requireNonNull(depth1Dir.listFiles(File::isDirectory))) {
                 String depth2 = depth2Dir.getName();
-                Long d2Id = ensureCategory(depth2);
+                Long d2Id = ensureCategory(depth2, d1Id);
                 insertClosure(d1Id, d2Id, 1);
                 insertClosure(d2Id, d2Id, 0);
 
@@ -57,8 +57,7 @@ public class CategoryInitService {
                     }
 
                     String depth3 = removeExtension(fileName);
-                    Long d3Id = ensureCategory(depth3);
-
+                    Long d3Id = ensureCategory(depth3, d2Id);
                     insertClosure(d1Id, d3Id, 2);
                     insertClosure(d2Id, d3Id, 1);
                     insertClosure(d3Id, d3Id, 0);
@@ -86,12 +85,15 @@ public class CategoryInitService {
         }
     }
 
-    private Long ensureCategory(String name) {
-        if (categoryCache.containsKey(name)) return categoryCache.get(name);
+    private Long ensureCategory(String name, Long parentId) {
+        String key = parentId + ">" + name;
+        if (categoryCache.containsKey(key)) return categoryCache.get(key);
 
-        Category cat = categoryRepository.findByName(name)
-                .orElseGet(() -> categoryRepository.save(Category.builder().name(name).build()));
-        categoryCache.put(name, cat.getId());
+        Optional<Category> existing = categoryRepository.findByName(name)
+                .filter(cat -> parentId == 0L || closureRepository.existsByAncestorAndDescendant(parentId, cat.getId()));
+
+        Category cat = existing.orElseGet(() -> categoryRepository.save(Category.builder().name(name).build()));
+        categoryCache.put(key, cat.getId());
         return cat.getId();
     }
 

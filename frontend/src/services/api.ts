@@ -34,6 +34,6 @@ export const getCategoryTree = async () => {
 };
 
 export const getDocumentsByCategory = async (categoryId: number) => {
-  const response = await axios.get(`/api/documents/by-category/${categoryId}`);
+  const response = await axios.get(`${BASE_URL}/documents/by-category/${categoryId}`);
   return response.data;
 };

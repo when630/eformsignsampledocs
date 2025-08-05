@@ -22,6 +22,7 @@ const Header = () => {
         />
         <button onClick={handleSearch}>검색</button>
       </div>
+      <div className="underline-short" />
     </div>
   );
 };
