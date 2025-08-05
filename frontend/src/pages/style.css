@@ -1,0 +1,43 @@
+/* src/pages/style.css */
+
+.main-container {
+  padding: 2rem;
+}
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.site-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.account-section {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.account-name {
+  font-weight: 500;
+}
+
+.search-area {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.search-area input {
+  padding: 8px;
+  width: 300px;
+  margin-right: 8px;
+}
+
+.search-area button {
+  padding: 8px 16px;
+}

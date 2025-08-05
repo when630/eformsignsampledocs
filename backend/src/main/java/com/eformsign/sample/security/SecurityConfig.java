@@ -21,6 +21,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -30,10 +31,10 @@ public class SecurityConfig {
                                 "/api/category/**",
                                 "/**"
                         ).permitAll()
-                        .anyRequest().permitAll() // 일단 모두 허용해보자
+                        .anyRequest().permitAll() // 일단 모두 허용
                 )
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
-                .cors(cors -> cors.disable()); // 테스트용으로 CORS도 꺼보자
+                .cors(cors -> cors.disable()); // 테스트용으로 CORS 꺼두기
 
         return http.build();
     }

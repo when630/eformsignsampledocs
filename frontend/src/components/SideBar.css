@@ -1,0 +1,76 @@
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background-color: #0077cc;
+  color: white;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ffffff;
+  padding-bottom: 10px;
+}
+
+.account-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.account-name {
+  flex: 1;
+  font-size: 14px;
+  color: #f1f5f9;
+}
+
+.refresh-btn,
+.logout-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.refresh-btn:hover,
+.logout-btn:hover {
+  color: #e2e8f0;
+}
+
+.menu {
+  margin-top: 10px;
+}
+
+.menu-item {
+  margin-bottom: 10px;
+  text-align: start;
+  margin-left: 10px;
+}
+
+.menu-title {
+  cursor: pointer;
+  font-weight: 500;
+  color: #e2e8f0;
+}
+
+.submenu {
+  margin-left: 15px;
+  margin-top: 5px;
+}
+
+.submenu-item {
+  font-size: 14px;
+  margin: 3px 0;
+  color: #cbd5e1;
+  cursor: pointer;
+}
+
+.submenu-item:hover {
+  color: #ffffff;
+}
