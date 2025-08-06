@@ -15,6 +15,8 @@ const LoginPage = () => {
     try {
       const res = await login(email, password);
       localStorage.setItem('access_token', res.access_token);
+      localStorage.setItem('refresh_token', res.token.refresh_token);
+      localStorage.setItem('account', JSON.stringify(res.account));
       setError('');
       navigate('/');
     } catch (err: any) {

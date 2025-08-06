@@ -4,7 +4,7 @@ import SideBar from './SideBar';
 
 const Layout = ({ children, onCategoryClick }: { children: React.ReactNode, onCategoryClick: (id: number) => void }) => {
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', margin: '5px'}}>
       <SideBar onCategoryClick={onCategoryClick} />
       <div style={{ flex: 1 }}>
         <Header />

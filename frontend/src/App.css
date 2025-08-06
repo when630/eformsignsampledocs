@@ -1,0 +1,6 @@
+/* src/index.css 또는 App 전체에 적용되는 전역 CSS 파일 */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}

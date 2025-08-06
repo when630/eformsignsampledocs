@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   padding: 2rem 1rem;
-  background-color: #f0f8ff;
+  background-color: #ffffff;
 }
 
 .site-title {
@@ -35,7 +35,7 @@
 .search-bar button {
   padding: 10px 20px;
   font-size: 1rem;
-  background-color: #3b82f6;
+  background-color: #0077cc;
   color: white;
   border: none;
   border-radius: 8px;
@@ -44,11 +44,18 @@
 }
 
 .search-bar button:hover {
-  background-color: #2563eb;
+  background-color: #3490d2;
 }
 
 .search-bar {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.underline-short {
+  display: inline-block;
+  border-bottom: 1px solid #0077cc;
+  width: 70%;
+  margin-top: 30px;
 }

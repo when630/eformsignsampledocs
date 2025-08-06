@@ -50,7 +50,8 @@ public class DocumentController {
     // 2. 카테고리 기준 문서 목록 조회
     @GetMapping("/by-category/{categoryId}")
     public List<Document> getDocumentsByCategory(@PathVariable Long categoryId) {
-        return documentRepository.findByCategoryId(categoryId);
+        List<Long> depth3Ids = categoryService.getDepth3CategoryIdsUnder(categoryId);
+        return documentRepository.findByCategoryIdIn(depth3Ids);
     }
 
     // 3. 문서 상세 조회

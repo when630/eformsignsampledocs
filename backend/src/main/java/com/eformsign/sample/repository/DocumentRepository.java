@@ -10,4 +10,5 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 
     List<Document> findByCategoryId(Long categoryId);
     Optional<Document> findById(Long id);
+    List<Document> findByCategoryIdIn(List<Long> ids);
 }
