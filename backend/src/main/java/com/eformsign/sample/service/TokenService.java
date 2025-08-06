@@ -81,7 +81,55 @@ public class TokenService {
     }
 
     public ResponseEntity<?> refreshToken(String refreshToken) {
-        return ResponseEntity.status(501).body("Not implemented");
+        System.out.println("[TokenService] refreshToken 요청 도착: " + refreshToken);
+
+        Token token = tokenRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new RuntimeException("리프레시 토큰이 유효하지 않습니다."));
+
+        Account account = token.getAccount();
+        System.out.println("account: " + account.getEmail());
+
+        String base64Key = Base64.getEncoder().encodeToString(account.getApiKey().getBytes());
+        long executionTime = System.currentTimeMillis();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("accept", "application/json");
+        headers.set("Authorization", "Bearer " + base64Key);
+        headers.set("eformsign_signature", "Bearer " + account.getSecretKey());
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("execution_time", executionTime);
+        body.put("member_id", account.getEmail());
+        body.put("grant_type", "refresh_token");
+        body.put("refresh_token", refreshToken);
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<Map> response = restTemplate.postForEntity(
+                "https://api.eformsign.com/v2.0/api_auth/access_token",
+                requestEntity,
+                Map.class
+        );
+
+        System.out.println("eformsign 응답: " + response.getStatusCode() + " - " + response.getBody());
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            Map<String, Object> oauth = (Map<String, Object>) response.getBody().get("oauth_token");
+
+            token.setAccessToken((String) oauth.get("access_token"));
+            token.setRefreshToken((String) oauth.get("refresh_token"));
+            token.setExpiresAt(LocalDateTime.now().plusHours(1));
+            tokenRepository.save(token);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("access_token", oauth.get("access_token"));
+            result.put("refresh_token", oauth.get("refresh_token"));
+
+            return ResponseEntity.ok(result);
+        }
+
+        return ResponseEntity.status(500).body("토큰 갱신 실패");
     }
 
     public ResponseEntity<?> getMe(String bearerToken) {

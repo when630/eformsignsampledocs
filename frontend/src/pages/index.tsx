@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
-import { getDocumentsByCategory } from '../services/api';
+import { getDocumentsByCategory, getCategoryPath } from '../services/api';
 import './style.css';
 import { Document } from '../utils/types';
 import DocumentModal from '../components/DocumentModal';
@@ -10,20 +10,26 @@ const MainPage = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [loadedMap, setLoadedMap] = useState<{ [id: number]: boolean }>({});
+  const [categoryPath, setCategoryPath] = useState<string>('');
 
   useEffect(() => {
     if (selectedCategoryId !== null) {
-      getDocumentsByCategory(selectedCategoryId)
-        .then((docs) => {
+      Promise.all([
+        getDocumentsByCategory(selectedCategoryId),
+        getCategoryPath(selectedCategoryId),
+      ])
+        .then(([docs, path]) => {
           setDocuments(docs);
-          // 모든 썸네일 로딩 상태 초기화
+
           const initialMap: { [id: number]: boolean } = {};
           docs.forEach((doc: Document) => {
             initialMap[doc.id] = false;
           });
           setLoadedMap(initialMap);
+
+          setCategoryPath(`${path.join(' > ')} (총 ${docs.length}개 문서)`);
         })
-        .catch((err) => console.error("문서 로드 실패", err));
+        .catch((err) => console.error("문서 또는 카테고리 경로 로드 실패", err));
     }
   }, [selectedCategoryId]);
 
@@ -34,6 +40,10 @@ const MainPage = () => {
   return (
     <>
       <Layout onCategoryClick={setSelectedCategoryId}>
+        <div className="category-info">
+          {categoryPath && <p>{categoryPath}</p>}
+        </div>
+
         <div className="document-grid">
           {documents.map((doc) => (
             <div

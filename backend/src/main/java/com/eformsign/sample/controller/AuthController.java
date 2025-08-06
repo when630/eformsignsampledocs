@@ -8,6 +8,7 @@ import com.eformsign.sample.repository.AccountRepository;
 import com.eformsign.sample.repository.TokenRepository;
 import com.eformsign.sample.service.AuthService;
 import com.eformsign.sample.service.TokenService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,8 +38,13 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@RequestBody Map<String, String> body) {
-        return tokenService.refreshToken(body.get("refresh_token"));
+    public ResponseEntity<?> refresh(HttpServletRequest request) {
+        String auth = request.getHeader("Authorization");
+        if (auth == null || !auth.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("리프레시 토큰 없음");
+        }
+        String refreshToken = auth.substring(7);
+        return tokenService.refreshToken(refreshToken);
     }
 
     @GetMapping("/me")

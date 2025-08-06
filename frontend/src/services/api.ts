@@ -37,3 +37,26 @@ export const getDocumentsByCategory = async (categoryId: number) => {
   const response = await axios.get(`${BASE_URL}/documents/by-category/${categoryId}`);
   return response.data;
 };
+
+export const getCategoryPath = async (categoryId: number) => {
+  const response = await axios.get(`${BASE_URL}/category/path/${categoryId}`);
+  return response.data;
+};
+
+export const refreshToken = async (): Promise<any> => {
+  const refreshToken = localStorage.getItem("refresh_token");
+  if (!refreshToken) {
+    throw new Error("로컬스토리지에 refresh_token이 없습니다.");
+  }
+
+  const res = await axios.post(
+    "http://localhost:8080/api/auth/refresh",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${refreshToken}`,
+      },
+    }
+  );
+  return res.data;
+};

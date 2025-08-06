@@ -33,8 +33,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().permitAll() // 일단 모두 허용
                 )
-                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
-                .cors(cors -> cors.disable()); // 테스트용으로 CORS 꺼두기
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
 
         return http.build();
     }
