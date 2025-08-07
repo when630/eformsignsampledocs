@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="UTF-8">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>템플릿 생성</title>
+    <script src="https://www.eformsign.com/plugins/jquery/jquery.min.js"></script>
+    <script src="https://www.eformsign.com/lib/js/efs_embedded_form.js"></script>
+</head>
+
+<body>
+    <iframe id="eformsign_iframe" name="eformsign_iframe" width="100%" height="1000px"></iframe>
+
+    <script>
+        window.addEventListener('message', function (event) {
+
+            const data = event.data;
+
+            if (!document) {
+                console.log('no document');
+            }
+            else {
+                console.log("document.title:", data.document.title);
+            }
+
+            window.account = data.account;
+            window.token = data.token;
+            window.base64 = data.base64;
+            window.document.title = data.document.title;
+
+            const eformsign = new EformSignTemplate();
+            const template_option = {
+                company: {
+                    id: data.account.company_id,
+                    country_code: 'kr',
+                    user_key: ''
+                },
+                user: {
+                    id: data.account.email,
+                    access_token: data.token.access_token,
+                    refresh_token: data.token.refresh_token
+                },
+                mode: {
+                    type: '01',
+                    template_type: 'form'
+                },
+                layout: {
+                    lang_code: 'ko',
+                    header: true,
+                    footer: true,
+                    zoom: '0.5'
+                },
+                prefill: {
+                    template_name: data.document.title,
+                    step_settings: [],
+                    disabled_form_id: true,
+                    is_form_id_numbering: false,
+                    permissions: {
+                        write: { type: ['all'] }
+                    },
+                    quick_processing: false
+                },
+                disabled_form_id_numbering_list: ['Account/숫자', 'Account/날짜'],
+                disabled_form_id_list: ['Account/숫자', 'Account/날짜'],
+                return_fields: {
+                    input_fields: ['id', 'type'],
+                    dataset_fields: ['id', 'type', 'required']
+                },
+                template_file: {
+                    name: data.document.title + ".pdf",
+                    mime: '@file/octet-stream',
+                    data: data.base64
+                }
+            };
+
+            const success_callback = function (response) {
+                console.log('[SUCCESS]', response);
+                alert("템플릿 생성 완료: " + response.template_name);
+            };
+
+            const error_callback = function (response) {
+                console.log('[ERROR]', response);
+                alert("템플릿 생성 실패: " + response.message);
+            };
+
+            const action_callback = function (response) {
+                console.log('[ACTION]', response.data);
+            };
+
+            eformsign.template(template_option, 'eformsign_iframe', success_callback, error_callback, action_callback);
+            eformsign.open();
+        });
+    </script>
+</body>
+
+</html>

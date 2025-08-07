@@ -4,6 +4,7 @@ import RegisterPage from './pages/register';
 import MainPage from './pages';
 import ProtectedRoute from './components/ProtectedRoute';
 
+
 function App() {
   return (
     <Routes>

@@ -135,4 +135,41 @@ public class TokenService {
     public ResponseEntity<?> getMe(String bearerToken) {
         return ResponseEntity.ok("토큰 확인 완료: " + bearerToken);
     }
+
+    public Token issueToken(Account account) {
+        String base64Key = Base64.getEncoder().encodeToString(account.getApiKey().getBytes());
+        long executionTime = System.currentTimeMillis();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("accept", "application/json");
+        headers.set("Authorization", "Bearer " + base64Key);
+        headers.set("eformsign_signature", "Bearer " + account.getSecretKey());
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("execution_time", executionTime);
+        body.put("member_id", account.getEmail());
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        ResponseEntity<Map> response = restTemplate.postForEntity(
+                "https://api.eformsign.com/v2.0/api_auth/access_token",
+                requestEntity,
+                Map.class
+        );
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            Map<String, Object> oauth = (Map<String, Object>) response.getBody().get("oauth_token");
+
+            Token token = tokenRepository.findByAccount(account).orElse(new Token());
+            token.setAccount(account);
+            token.setAccessToken((String) oauth.get("access_token"));
+            token.setRefreshToken((String) oauth.get("refresh_token"));
+            token.setExpiresAt(LocalDateTime.now().plusHours(1));
+            tokenRepository.save(token);
+
+            return token;
+        }
+
+        throw new RuntimeException("이폼사인 토큰 발급 실패");
+    }
 }
