@@ -15,7 +15,7 @@ public class EformsignService {
 
     private String base64File;
 
-    public Map<String, Object> createTemplate(TemplateRequest request) {
+    public Map<String, Object> createTemplateOption(TemplateRequest request) {
         Map<String, Object> option = new HashMap<>();
 
         option.put("company", Map.of(

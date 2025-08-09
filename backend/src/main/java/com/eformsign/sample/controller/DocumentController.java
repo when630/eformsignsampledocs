@@ -7,6 +7,7 @@ import com.eformsign.sample.entity.Storage;
 import com.eformsign.sample.repository.DocumentRepository;
 import com.eformsign.sample.repository.StorageRepository;
 import com.eformsign.sample.service.CategoryService;
+import com.eformsign.sample.service.DocumentService;
 import com.eformsign.sample.service.DownloadLogService;
 import com.eformsign.sample.util.ThumbnailUtil;
 
@@ -19,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,6 +30,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -40,6 +43,7 @@ public class DocumentController {
     private final DocumentRepository documentRepository;
     private final StorageRepository storageRepository;
     private final DownloadLogService downloadLogService;
+    private final DocumentService documentService;
 
     // 1. 카테고리 트리 조회
     @GetMapping("/tree")
@@ -61,7 +65,7 @@ public class DocumentController {
                 .orElseThrow(() -> new IllegalArgumentException("해당 문서 없음: id=" + id));
     }
 
-    // 4. 문서 썸네일 반환 (PDF, DOCX 지원)
+    // 4. 문서 썸네일 반환 (PDF, DOC 지원)
     @GetMapping("/thumbnail/{id}")
     public ResponseEntity<Resource> getThumbnail(@PathVariable Long id) throws Exception {
         log.info("getThumbnail 호출됨, id={}", id);
@@ -80,8 +84,8 @@ public class DocumentController {
             case "pdf":
                 thumbnailImage = ThumbnailUtil.generatePdfThumbnail(file);
                 break;
-            case "docx":
-                thumbnailImage = ThumbnailUtil.generateDocxThumbnail(file);
+            case "doc":
+                thumbnailImage = ThumbnailUtil.generateDocThumbnail(file);
                 break;
             default:
                 throw new IllegalArgumentException("지원하지 않는 파일 형식: " + extension);
@@ -109,7 +113,7 @@ public class DocumentController {
                 .getPath();
 
         Resource resource = new UrlResource(Paths.get(filePath).toUri());
-        String fileName = document.getTitle() + ".docx";
+        String fileName = document.getTitle() + ".doc";
 
         // 다운로드 로그 저장
         downloadLogService.logDownload(document.getId().toString(), accountId, request);
@@ -123,5 +127,19 @@ public class DocumentController {
     private String getExtension(String filename) {
         int dotIndex = filename.lastIndexOf(".");
         return (dotIndex == -1) ? "" : filename.substring(dotIndex + 1);
+    }
+
+    @GetMapping("/base64/{storageId}")
+    public ResponseEntity<?> getBase64Document(
+            @PathVariable Long storageId,
+            @RequestParam Long accountId
+    ) {
+        try {
+            Map<String, Object> result = documentService.getBase64WithToken(storageId, accountId);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", e.getMessage()));
+        }
     }
 }

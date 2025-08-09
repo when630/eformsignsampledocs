@@ -35,7 +35,7 @@ public class AuthService {
         account.setPassword(passwordEncoder.encode(request.getPassword()));
         account.setApiKey(request.getApiKey());
         account.setSecretKey(request.getSecretKey());
-        account.setCompany_id(request.getCompany_id());
+        account.setCompanyId(request.getCompany_id());
         accountRepository.save(account);
 
         return ResponseEntity.ok("회원가입 완료");

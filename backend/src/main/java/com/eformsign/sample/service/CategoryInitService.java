@@ -52,7 +52,7 @@ public class CategoryInitService {
                     String fileName = file.getName();
                     if (!file.isFile()) continue;
                     if (fileName.equals(".DS_Store") || fileName.startsWith("~$")) {
-                        log.info("⛔ 무시된 파일: {}", file.getPath());
+                        log.info("무시된 파일: {}", file.getPath());
                         continue;
                     }
 
@@ -62,7 +62,7 @@ public class CategoryInitService {
                     insertClosure(d2Id, d3Id, 1);
                     insertClosure(d3Id, d3Id, 0);
 
-                    log.info("📄 저장할 문서: {}/{}/{}", depth1, depth2, fileName);
+                    log.info("저장할 문서: {}/{}/{}", depth1, depth2, fileName);
 
                     // Storage 저장
                     Storage storage = Storage.builder()
