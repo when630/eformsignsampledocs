@@ -7,9 +7,11 @@ import com.eformsign.sample.entity.Document;
 import com.eformsign.sample.repository.AccountRepository;
 import com.eformsign.sample.repository.DocumentRepository;
 import com.eformsign.sample.repository.StorageRepository;
+import com.eformsign.sample.util.DocToPdfUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,7 +41,25 @@ public class DocumentService {
                 .orElseThrow(() -> new IllegalArgumentException("파일이 존재하지 않습니다."));
 
         Path filePath = Paths.get(storage.getPath());
-        byte[] fileBytes = Files.readAllBytes(filePath);
+        File file = filePath.toFile();
+
+        File fileToSend;
+
+        // 4. 확장자가 doc 또는 docx라면 PDF 변환
+        String lowerName = file.getName().toLowerCase();
+        if (lowerName.endsWith(".doc") || lowerName.endsWith(".docx")) {
+            try {
+                fileToSend = DocToPdfUtil.getOrConvertPdfFromDoc(file);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // 인터럽트 상태 복구
+                throw new RuntimeException("PDF 변환 중 인터럽트 발생", e);
+            }
+        } else {
+            fileToSend = file; // 이미 PDF면 그대로 사용
+        }
+
+        // 5. base64 변환
+        byte[] fileBytes = Files.readAllBytes(fileToSend.toPath());
         String base64 = Base64.getEncoder().encodeToString(fileBytes);
 
         // 4. 응답 구성

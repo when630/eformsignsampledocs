@@ -11,7 +11,7 @@ import com.eformsign.sample.repository.DocumentRepository;
 import com.eformsign.sample.repository.StorageRepository;
 import com.eformsign.sample.repository.TokenRepository;
 import com.eformsign.sample.service.EformsignService;
-import com.eformsign.sample.util.DocxToPdfUtil;
+import com.eformsign.sample.util.DocToPdfUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -55,10 +54,10 @@ public class TemplateController {
                 .orElseThrow(() -> new RuntimeException("Storage not found"));
         String filePath = storage.getPath();
 
-        // 5. docx → pdf 변환 처리
+        // 5. doc → pdf 변환 처리
         File file;
-        if (filePath.toLowerCase().endsWith(".docx")) {
-            file = DocxToPdfUtil.getOrConvertPdfFromDocx(new File(filePath));
+        if (filePath.toLowerCase().endsWith(".doc")) {
+            file = DocToPdfUtil.getOrConvertPdfFromDoc(new File(filePath));
         } else {
             file = new File(filePath);
         }
@@ -103,12 +102,14 @@ public class TemplateController {
                 .orElseThrow(() -> new RuntimeException("Storage not found"));
         String filePath = storage.getPath();
 
-        // 5. docx → pdf 변환 처리
+        // 5. doc → pdf 변환 처리
         File file;
-        if (filePath.toLowerCase().endsWith(".docx")) {
-            file = DocxToPdfUtil.getOrConvertPdfFromDocx(new File(filePath));
+        if (filePath.toLowerCase().endsWith(".doc")) {
+            file = DocToPdfUtil.getOrConvertPdfFromDoc(new File(filePath));
+            System.out.println("[템플릿 전송] DOCX 변환 → " + file.getAbsolutePath());
         } else {
             file = new File(filePath);
+            System.out.println("[템플릿 전송] 원본 사용 → " + file.getAbsolutePath());
         }
 
         // 6. 파일 → base64 인코딩

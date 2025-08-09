@@ -65,7 +65,7 @@ public class DocumentController {
                 .orElseThrow(() -> new IllegalArgumentException("해당 문서 없음: id=" + id));
     }
 
-    // 4. 문서 썸네일 반환 (PDF, DOCX 지원)
+    // 4. 문서 썸네일 반환 (PDF, DOC 지원)
     @GetMapping("/thumbnail/{id}")
     public ResponseEntity<Resource> getThumbnail(@PathVariable Long id) throws Exception {
         log.info("getThumbnail 호출됨, id={}", id);
@@ -84,8 +84,8 @@ public class DocumentController {
             case "pdf":
                 thumbnailImage = ThumbnailUtil.generatePdfThumbnail(file);
                 break;
-            case "docx":
-                thumbnailImage = ThumbnailUtil.generateDocxThumbnail(file);
+            case "doc":
+                thumbnailImage = ThumbnailUtil.generateDocThumbnail(file);
                 break;
             default:
                 throw new IllegalArgumentException("지원하지 않는 파일 형식: " + extension);
@@ -113,7 +113,7 @@ public class DocumentController {
                 .getPath();
 
         Resource resource = new UrlResource(Paths.get(filePath).toUri());
-        String fileName = document.getTitle() + ".docx";
+        String fileName = document.getTitle() + ".doc";
 
         // 다운로드 로그 저장
         downloadLogService.logDownload(document.getId().toString(), accountId, request);

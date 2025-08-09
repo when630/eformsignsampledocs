@@ -48,14 +48,14 @@ public class ThumbnailUtil {
     }
 
     /**
-     * DOCX 썸네일 생성 (없으면 생성)
+     * DOC 썸네일 생성 (없으면 생성)
      */
-    public static File generateDocxThumbnail(File docxFile) throws Exception {
-        String baseName = getSafeBaseName(docxFile.getName(), ".docx");
+    public static File generateDocThumbnail(File docFile) throws Exception {
+        String baseName = getSafeBaseName(docFile.getName(), ".doc");
         File thumbnailFile = new File(THUMBNAIL_DIR, baseName + ".jpg");
 
         if (thumbnailFile.exists()) {
-            log.info("이미 존재하는 DOCX 썸네일 반환: {}", thumbnailFile.getAbsolutePath());
+            log.info("이미 존재하는 DOC 썸네일 반환: {}", thumbnailFile.getAbsolutePath());
             return thumbnailFile;
         }
 
@@ -64,7 +64,7 @@ public class ThumbnailUtil {
 
         // PDF 없으면 생성
         if (!pdfFile.exists()) {
-            convertDocxToPdf(docxFile, pdfFile);
+            convertDocToPdf(docFile, pdfFile);
         } else {
             log.info("이미 존재하는 PDF 사용: {}", pdfFile.getAbsolutePath());
         }
@@ -73,15 +73,15 @@ public class ThumbnailUtil {
     }
 
     /**
-     * LibreOffice로 DOCX → PDF 변환
+     * LibreOffice로 DOC → PDF 변환
      */
-    public static void convertDocxToPdf(File docxFile, File outputPdf) throws IOException, InterruptedException {
+    public static void convertDocToPdf(File docFile, File outputPdf) throws IOException, InterruptedException {
         ProcessBuilder pb = new ProcessBuilder(
                 "libreoffice",
                 "--headless",
                 "--convert-to", "pdf",
                 "--outdir", outputPdf.getParent(),
-                docxFile.getAbsolutePath()
+                docFile.getAbsolutePath()
         );
         pb.redirectErrorStream(true);
 
@@ -98,7 +98,7 @@ public class ThumbnailUtil {
             throw new RuntimeException("LibreOffice PDF 변환 실패 (코드: " + exitCode + ")");
         }
 
-        String convertedName = docxFile.getName().replaceAll("\\.docx$", ".pdf");
+        String convertedName = docFile.getName().replaceAll("\\.doc$", ".pdf");
         File convertedPdf = new File(outputPdf.getParentFile(), convertedName);
 
         if (!convertedPdf.exists()) {
@@ -107,7 +107,7 @@ public class ThumbnailUtil {
 
         // rename → 지정한 outputPdf 이름으로 이동
         Files.move(convertedPdf.toPath(), outputPdf.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        log.info("DOCX → PDF 변환 완료: {}", outputPdf.getAbsolutePath());
+        log.info("DOC → PDF 변환 완료: {}", outputPdf.getAbsolutePath());
     }
 
     /**
@@ -117,7 +117,7 @@ public class ThumbnailUtil {
         return filename.replaceAll(extension + "$", "").replaceAll("\\s+", "_");
     }
 
-    public static File getOrConvertDocxToPdf(File docxFile, File outputPdf) throws IOException, InterruptedException {
+    public static File getOrConvertDocToPdf(File docFile, File outputPdf) throws IOException, InterruptedException {
         if (outputPdf.exists()) {
             return outputPdf;
         }
@@ -127,7 +127,7 @@ public class ThumbnailUtil {
                 "--headless",
                 "--convert-to", "pdf",
                 "--outdir", outputPdf.getParent(),
-                docxFile.getAbsolutePath()
+                docFile.getAbsolutePath()
         );
         pb.redirectErrorStream(true);
         Process process = pb.start();
