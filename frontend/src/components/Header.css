@@ -56,3 +56,73 @@
   width: 70%;
   margin-top: 30px;
 }
+
+/* 드롭다운 래퍼 */
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  z-index: 20;
+  padding: 6px;
+}
+
+/* 검색바가 relative여야 드롭다운이 위치함 */
+.search-bar {
+  position: relative;
+}
+
+/* 목록 */
+.search-dropdown-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.search-dropdown-item {
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.search-dropdown-item:hover {
+  background: #f0f8ff;
+  color: #005fa3;
+  font-weight: 600;
+}
+
+/* 비어있을 때 */
+.search-dropdown-empty {
+  padding: 12px;
+  color: #555;
+  text-align: center;
+}
+
+/* 전체 결과 보기 */
+.search-dropdown-more {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  background: #fff;
+  color: #0077cc;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.search-dropdown-more:hover { background: #005fa3; }
+
+/* 활성 후보 */
+.search-dropdown-item.active {
+  background: #f0f8ff;
+  color: #005fa3;
+  font-weight: 600;
+}

@@ -3,6 +3,7 @@ import LoginPage from './pages/login';
 import RegisterPage from './pages/register';
 import MainPage from './pages';
 import ProtectedRoute from './components/ProtectedRoute';
+import SearchResultsPage from './pages/search';
 
 
 function App() {
@@ -15,6 +16,14 @@ function App() {
         element={
           <ProtectedRoute>
             <MainPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/search"
+        element={
+          <ProtectedRoute>
+            <SearchResultsPage />
           </ProtectedRoute>
         }
       />

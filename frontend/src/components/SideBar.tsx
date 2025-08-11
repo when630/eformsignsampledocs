@@ -13,6 +13,7 @@ const SideBar = ({ onCategoryClick }: Props) => {
   const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set());
   const [accountName, setAccountName] = useState<string>('사용자');
   const [openLegalModal, setOpenLegalModal] = React.useState(false);
+  
 
   useEffect(() => {
     getCategoryTree()
