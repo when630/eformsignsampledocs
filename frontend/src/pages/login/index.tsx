@@ -27,7 +27,7 @@ const LoginPage = () => {
   return (
     <div className="login-wrapper">
       <form className="login-form" onSubmit={handleSubmit}>
-        <h2 className="login-title">로그인</h2>
+        <h2 className="login-title">eformSample</h2>
 
         <input
           className="login-input"

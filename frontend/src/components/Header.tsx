@@ -11,11 +11,11 @@ const Header = () => {
 
   return (
     <div className="header">
-      <h1 className="site-title">서식 검색</h1>
       <div className="search-bar">
+        <img src="search-big.png" alt="검색" className="search-icon" />
         <input
           type="text"
-          placeholder="서식 검색"
+          placeholder="서식명 검색"
           value={searchKeyword}
           onChange={(e) => setSearchKeyword(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSearch()}

@@ -63,15 +63,9 @@ const SideBar = ({ onCategoryClick }: Props) => {
       <img src="logo-w@2x.png" alt="이폼사인" className="eformsign-logo" />
       <div className="title">eformSample</div>
       <div className="account-info">
-        <div className="account-name">{accountName} 님</div>
-        <button className="refresh-btn" onClick={handleRefreshToken}>토큰 갱신</button>
-        <button
-          className="sidebar-legal-btn"
-          onClick={() => setOpenLegalModal(true)}
-          title="샘플 양식 면책 고지"
-        >
-          면책 고지
-        </button>
+        <div className="account-name">{accountName} 님
+        <button className="refresh-btn" onClick={handleRefreshToken}>↺</button></div>
+        <button className="sidebar-legal-btn" onClick={() => setOpenLegalModal(true)} title="서식 안내">서식 안내</button>
         <button className="logout-btn" onClick={handleLogout}>로그아웃</button>
         
       </div>

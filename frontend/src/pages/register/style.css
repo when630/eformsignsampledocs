@@ -2,8 +2,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 120vh;
   background-color: #f0f8ff;
+  overflow-y: auto;
+  
 }
 
 .register-form {
@@ -12,6 +14,7 @@
   border-radius: 10px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
   width: 340px;
+  overflow-y: scroll;
 }
 
 .register-title {
@@ -20,10 +23,17 @@
   color: #0077cc;
 }
 
+.register-info-input {
+  width: 92%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+}
+
 .register-input {
   width: 92%;
   padding: 0.75rem;
-  margin-bottom: 1rem;
   border: 1px solid #cccccc;
   border-radius: 6px;
 }
@@ -52,6 +62,7 @@
 /* ───────── 면책 고지 카드 ───────── */
 .legal-card {
   margin-top: 0.75rem;
+  margin-bottom: 1rem;
   padding: 0.9rem 1rem;
   border: 1px solid #cccccc;
   border-radius: 8px;
@@ -109,4 +120,9 @@
 .register-button.is-disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.register-caption {
+  font-size: 0.8rem;
+  color: #0077cc;
 }

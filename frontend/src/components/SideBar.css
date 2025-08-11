@@ -1,11 +1,13 @@
 .sidebar {
   width: 260px;
-  height: 100vh;
+  height: 99vh;
   background-color: #0077cc;
   color: white;
   padding: 20px;
   box-sizing: border-box;
   border-radius: 8px;
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .title {
@@ -23,15 +25,25 @@
   align-items: center;
   gap: 8px;
   margin-bottom: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .account-name {
   flex: 1;
   font-size: 16px;
-  color: #f1f5f9;
+  color: #0077cc;
 }
 
-.refresh-btn,
+.refresh-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 1.5rem;
+}
+
 .logout-btn,
 .sidebar-legal-btn {
   background: transparent;
@@ -44,11 +56,11 @@
 .refresh-btn:hover,
 .logout-btn:hover,
 .sidebar-legal-btn:hover {
-  color: #e2e8f0;
+  color: #0077cc;
 }
 
 .menu {
-  margin-top: 10px;
+  margin-top: 30px;
 }
 
 .menu-item {
@@ -60,9 +72,10 @@
 .menu-title {
   cursor: pointer;
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: #e2e8f0;
   margin-bottom: 10px;
+  margin-left: 3px;
 }
 
 .submenu {
@@ -93,4 +106,9 @@
   padding: 12px;
   border-top: 1px solid #ffffff;
   border-bottom: 1px solid #fff;
+}
+
+.folder-icon {
+  width: 2rem;
+  text-align: start;
 }

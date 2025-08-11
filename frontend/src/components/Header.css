@@ -6,16 +6,13 @@
   background-color: #ffffff;
 }
 
-.site-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  color: #333;
-}
-
 .search-bar {
   display: flex;
   gap: 0.5rem;
+}
+
+.search-icon {
+  width: 2rem;
 }
 
 .search-bar input {

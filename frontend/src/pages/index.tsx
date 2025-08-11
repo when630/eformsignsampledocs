@@ -38,7 +38,7 @@ const MainPage = () => {
   };
 
   return (
-    <>
+    <div className='main-container'>
       <Layout onCategoryClick={setSelectedCategoryId}>
         <div className="category-info">
           {categoryPath && <p>{categoryPath}</p>}
@@ -74,7 +74,7 @@ const MainPage = () => {
           onClose={() => setSelectedDocument(null)}
         />
       )}
-    </>
+    </div>
   );
 };
 
