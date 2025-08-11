@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './SideBar.css';
 import { getCategoryTree, refreshToken } from '../services/api';
 import { Category } from '../utils/types';
+import LegalConsentModalViewOnly from './LegalConsentModal';
 
 type Props = {
   onCategoryClick: (categoryId: number) => void;
@@ -11,6 +12,7 @@ const SideBar = ({ onCategoryClick }: Props) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set());
   const [accountName, setAccountName] = useState<string>('사용자');
+  const [openLegalModal, setOpenLegalModal] = React.useState(false);
 
   useEffect(() => {
     getCategoryTree()
@@ -63,8 +65,20 @@ const SideBar = ({ onCategoryClick }: Props) => {
       <div className="account-info">
         <div className="account-name">{accountName} 님</div>
         <button className="refresh-btn" onClick={handleRefreshToken}>토큰 갱신</button>
+        <button
+          className="sidebar-legal-btn"
+          onClick={() => setOpenLegalModal(true)}
+          title="샘플 양식 면책 고지"
+        >
+          면책 고지
+        </button>
         <button className="logout-btn" onClick={handleLogout}>로그아웃</button>
+        
       </div>
+      <LegalConsentModalViewOnly
+        open={openLegalModal}
+        onClose={() => setOpenLegalModal(false)}
+      />
       <div className="menu">
         {categories.map((depth1) => (
           <div key={depth1.id} className="menu-item">

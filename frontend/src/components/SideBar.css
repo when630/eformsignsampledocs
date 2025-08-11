@@ -32,7 +32,8 @@
 }
 
 .refresh-btn,
-.logout-btn {
+.logout-btn,
+.sidebar-legal-btn {
   background: transparent;
   border: none;
   cursor: pointer;
@@ -41,7 +42,8 @@
 }
 
 .refresh-btn:hover,
-.logout-btn:hover {
+.logout-btn:hover,
+.sidebar-legal-btn:hover {
   color: #e2e8f0;
 }
 

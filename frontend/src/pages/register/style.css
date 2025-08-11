@@ -48,3 +48,65 @@
   text-align: center;
   margin-bottom: 1rem;
 }
+
+/* ───────── 면책 고지 카드 ───────── */
+.legal-card {
+  margin-top: 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  background-color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.legal-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0077cc;
+  text-align: left;
+}
+
+.legal-text {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #333333;
+  margin: 0 0 0.5rem 0;
+}
+
+.legal-details {
+  font-size: 0.8rem;
+  color: #444444;
+  margin-bottom: 0.6rem;
+}
+
+.legal-details > summary {
+  cursor: pointer;
+  user-select: none;
+  padding: 0.25rem 0;
+  color: #005fa3;
+}
+
+.legal-details > summary:hover {
+  text-decoration: underline;
+}
+
+.legal-details ul {
+  margin: 0.4rem 0 0 1rem;
+  padding: 0;
+}
+
+.legal-consent-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #222222;
+  user-select: none;
+}
+
+/* 버튼 비활성화 시 기존 톤 유지 + 시각 피드백 */
+.register-button.is-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
