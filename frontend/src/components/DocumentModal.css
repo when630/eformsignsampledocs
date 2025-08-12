@@ -12,8 +12,6 @@
 
 /* ───────── Modal Box ───────── */
 .modal-content {
-  width: 100%;
-  max-width: 560px;            /* legal-modal과 동일한 폭 */
   max-height: 90vh;
   background: #ffffff;
   border-radius: 10px;         /* 더 둥글게 */

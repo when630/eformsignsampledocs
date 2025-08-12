@@ -4,6 +4,7 @@ import RegisterPage from './pages/register';
 import MainPage from './pages';
 import ProtectedRoute from './components/ProtectedRoute';
 import SearchResultsPage from './pages/search';
+import ManualPage from './pages/register/manual';
 
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/register/manual" element={<ManualPage />} />
       <Route
         path="/"
         element={

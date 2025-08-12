@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './SideBar.css';
 import { getCategoryTree, refreshToken } from '../services/api';
 import { Category } from '../utils/types';
@@ -13,6 +14,7 @@ const SideBar = ({ onCategoryClick }: Props) => {
   const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set());
   const [accountName, setAccountName] = useState<string>('사용자');
   const [openLegalModal, setOpenLegalModal] = React.useState(false);
+  const navigate = useNavigate();
   
 
   useEffect(() => {
@@ -56,7 +58,7 @@ const SideBar = ({ onCategoryClick }: Props) => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('account');
-    window.location.href = '/login';
+    navigate('/login', { replace: true });
   };
 
   return (
