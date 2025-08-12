@@ -36,6 +36,14 @@ const RegisterPage = () => {
     }
   };
 
+  const openManual = () => {
+    window.open(
+      '/register/manual', // 경로
+      '_blank',           // 새창
+      'width=1000,height=800,noopener,noreferrer' // 옵션
+    );
+  };
+
   return (
     <div className="register-wrapper">
       <form className="register-form" onSubmit={handleRegister}>
@@ -66,7 +74,12 @@ const RegisterPage = () => {
           required
         />
         <p className="register-caption">
-          <b>※ API를 먼저 생성해주셔야 됩니다.</b><br/>ⓘ 커넥트 → API / Webhook → API 키 생성
+          <p>
+            ※ API를 먼저 생성해주셔야 됩니다.   
+            <button className='manual-link' onClick={openManual}> API 메뉴얼 보기 </button>
+          </p>
+          <br/>
+          ⓘ 커넥트 → API / Webhook → API 키 생성
         </p>
         <input
           className="register-input"

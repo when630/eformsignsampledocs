@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { getDocumentsByCategory, getCategoryPath } from '../services/api';
 import './style.css';
@@ -9,28 +10,60 @@ const MainPage = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
-  const [loadedMap, setLoadedMap] = useState<{ [id: number]: boolean }>({});
+  const [loadedMap, setLoadedMap] = useState<Record<number, boolean>>({});
   const [categoryPath, setCategoryPath] = useState<string>('');
 
+  const location = useLocation() as { state?: { categoryId?: number } };
+  const navigate = useNavigate();
+
+  // 라우팅/세션 값 적용은 딱 1회만
+  const appliedFromRouteRef = useRef(false);
+
+  // 1) 라우팅/세션 categoryId 1회 적용
   useEffect(() => {
-    if (selectedCategoryId !== null) {
-      Promise.all([
-        getDocumentsByCategory(selectedCategoryId),
-        getCategoryPath(selectedCategoryId),
-      ])
-        .then(([docs, path]) => {
-          setDocuments(docs);
+    if (appliedFromRouteRef.current) return;
 
-          const initialMap: { [id: number]: boolean } = {};
-          docs.forEach((doc: Document) => {
-            initialMap[doc.id] = false;
-          });
-          setLoadedMap(initialMap);
+    const stateId = location.state?.categoryId;
+    const storedId = sessionStorage.getItem('pendingCategoryId');
 
-          setCategoryPath(`${path.join(' > ')} (총 ${docs.length}개 문서)`);
-        })
-        .catch((err) => console.error("문서 또는 카테고리 경로 로드 실패", err));
+    if (stateId != null) {
+      setSelectedCategoryId(Number(stateId));
+      appliedFromRouteRef.current = true;
+      // location.state 비워서 반복 적용 방지
+      navigate('.', { replace: true, state: {} });
+      return;
     }
+
+    if (storedId) {
+      setSelectedCategoryId(Number(storedId));
+      appliedFromRouteRef.current = true;
+      sessionStorage.removeItem('pendingCategoryId');
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // 2) 선택된 카테고리 변경 시 문서/경로 로드
+  useEffect(() => {
+    if (selectedCategoryId === null) return;
+
+    let alive = true;
+    Promise.all([
+      getDocumentsByCategory(selectedCategoryId),
+      getCategoryPath(selectedCategoryId),
+    ])
+      .then(([docs, path]) => {
+        if (!alive) return;
+        setDocuments(docs);
+
+        const initialMap: Record<number, boolean> = {};
+        docs.forEach((doc: Document) => { initialMap[doc.id] = false; });
+        setLoadedMap(initialMap);
+
+        setCategoryPath(`${path.join(' > ')} (총 ${docs.length}개 문서)`);
+      })
+      .catch((err) => console.error('문서 또는 카테고리 경로 로드 실패', err));
+
+    return () => { alive = false; };
   }, [selectedCategoryId]);
 
   const handleImageLoad = (id: number) => {
