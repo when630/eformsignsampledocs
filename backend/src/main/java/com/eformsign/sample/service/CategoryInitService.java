@@ -115,7 +115,7 @@ public class CategoryInitService {
                     documentRepository.save(Document.builder()
                             .categoryId(d3Id) // (장기적: 연관관계로 교체 권장)
                             .title(depth3)
-                            .uploaderName("시스템")
+                            .copyright(null)
                             .createdAt(LocalDateTime.now())
                             .storageId(savedStorage.getId())
                             .build());

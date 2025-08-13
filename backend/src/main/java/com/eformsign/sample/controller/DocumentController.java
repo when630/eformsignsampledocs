@@ -1,5 +1,6 @@
 package com.eformsign.sample.controller;
 
+import com.eformsign.sample.dto.CopyrightView;
 import com.eformsign.sample.dto.TreeResponse;
 import com.eformsign.sample.entity.Account;
 import com.eformsign.sample.entity.Document;
@@ -7,6 +8,7 @@ import com.eformsign.sample.entity.Storage;
 import com.eformsign.sample.repository.DocumentRepository;
 import com.eformsign.sample.repository.StorageRepository;
 import com.eformsign.sample.service.CategoryService;
+import com.eformsign.sample.service.DocumentReadService;
 import com.eformsign.sample.service.DocumentService;
 import com.eformsign.sample.service.DownloadLogService;
 import com.eformsign.sample.util.ThumbnailUtil;
@@ -46,6 +48,7 @@ public class DocumentController {
     private final StorageRepository storageRepository;
     private final DownloadLogService downloadLogService;
     private final DocumentService documentService;
+    private final DocumentReadService documentReadService;
 
     // 1. 카테고리 트리 조회
     @GetMapping("/tree")
@@ -177,5 +180,10 @@ public class DocumentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", e.getMessage()));
         }
+    }
+
+    @GetMapping("/{id}/copyright")
+    public CopyrightView getCopyright(@PathVariable("id") Long id) {
+        return documentReadService.getCopyrightView(id);
     }
 }

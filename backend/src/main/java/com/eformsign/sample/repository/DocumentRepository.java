@@ -37,4 +37,12 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
             """,
             nativeQuery = true)
     Page<Document> findByTitleWord(@Param("q") String q, Pageable pageable);
+
+    @Query("""
+           select d
+             from Document d
+             left join fetch d.copyright c
+            where d.id = :id
+           """)
+    Optional<Document> findByIdWithCopyright(@Param("id") Long id);
 }
