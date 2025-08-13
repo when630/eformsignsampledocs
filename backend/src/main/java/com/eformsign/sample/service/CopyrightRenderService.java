@@ -19,14 +19,13 @@ public class CopyrightRenderService {
 
         if (c.getType() == CopyrightType.PUBLIC_LICENSE) {
             return String.format(
-                    "본 저작물은 %s에서 %s년에 작성하였으며, %s 에서 무료로 다운받으실 수 있습니다.",
+                    "본 저작물은 %s에서 %s년에 작성하였으며, %s 홈페이지에서 무료로 다운받으실 수 있습니다.",
                     c.getName(),
                     year,
-                    c.getUrl() != null ? c.getUrl() : ""
+                    c.getName()
             );
         } else {
-            return String.format("© %s %s. All rights reserved.",
-                    year, c.getName());
+            return String.format("%s에서 제공하는 서식입니다.", c.getName());
         }
     }
 
