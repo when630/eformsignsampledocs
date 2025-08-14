@@ -72,12 +72,9 @@ const RegisterPage = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <p className="register-caption">
-          <p>
-            ※ API를 먼저 생성해주셔야 됩니다.
-            <button className='manual-link' onClick={openManual}> API 메뉴얼 보기 </button> <br />
-            ⓘ 커넥트 → API / Webhook → API 키 생성
-          </p>
+        <p className="manual-caption">
+          ※ API를 먼저 생성해주셔야 됩니다.
+          <button className='manual-link' onClick={openManual}> API 메뉴얼 보기 </button> <br />
         </p>
         <input
           className="register-input"
