@@ -153,7 +153,7 @@ const Header: React.FC = () => {
           <button onClick={goToFull}>검색</button>
 
           {openDropdown && (
-            <div className="search-dropdown" role="listbox" aria-activedescendant={activeIndex >= 0 ? `cand-${activeIndex}` : undefined}>
+            <div className="search-dropdown" role="listbox" aria-activedescendant={activeIndex >= 0 ? `cand-${activeIndex}` : undefined} tabIndex={0}>
               {loading && <div className="search-dropdown-empty">검색 중…</div>}
               {!loading && candidates.length === 0 && (
                 <div className="search-dropdown-empty">결과 없음</div>

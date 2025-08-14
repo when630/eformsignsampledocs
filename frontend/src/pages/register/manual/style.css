@@ -1,163 +1,166 @@
+/* 레이아웃 기본 */
 .manual-wrapper {
-  max-width: 920px;
-  margin: 24px auto;
-  padding: 0 16px;
+  padding: 16px 20px 24px;
+  max-width: 1080px;
+  margin: 0 auto;
 }
 
-.manual-title {
-  margin: 0 0 12px;
-  color: #0077cc;
-  font-size: 1.5rem;
-  font-weight: 800;
-}
-
-/* Tabs */
-.tabs {
-  display: flex;
-  gap: 8px;
-  margin: 8px 0 14px;
-}
-
-.tab {
-  appearance: none;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  color: #111827;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 700;
-}
-
-.tab:hover {
-  background: #f7fbff;
-}
-
-.tab.active {
-  background: #eaf5ff;
-  border-color: #cfe7ff;
-  color: #005fa3;
-}
-
-/* Card */
-.manual-card {
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  background: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-}
-
-/* Main stage */
-.manual-stage {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #fafafa;
-}
-
-.manual-image {
-  max-width: 100%;
-  height: auto;
-  object-fit: contain;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-/* Caption */
-.manual-description {
-  padding: 12px 16px;
-}
-
-.manual-step-title {
-  margin: 0 0 6px;
-  font-size: 1rem;
-  font-weight: 800;
-  color: #0077cc;
-}
-
-.manual-step-desc {
-  color: #333;
-  line-height: 1.7;
-  font-size: 0.95rem;
-}
-
-/* Controls */
-.manual-controls {
+.manual-topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 12px 16px;
-  border-top: 1px solid #f0f0f0;
 }
 
-.manual-progress {
-  color: #6b7280;
-  font-weight: bold;
+.manual-title {
+  margin: 0 0 8px 0;
+  color: #0077cc;
 }
 
-.btn {
-  padding: 0.6rem 0.9rem;
-  border-radius: 6px;
-  font-weight: 700;
-  cursor: pointer;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  color: #111827;
+.manual-help {
+  color: #0f3b62;
 }
 
-.btn:hover {
-  background: #f7fbff;
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn-primary {
-  background: #0077cc;
-  border-color: #0077cc;
-  color: #fff;
-}
-
-.btn-primary:hover {
-  background: #005fa3;
-  border-color: #005fa3;
-}
-
-/* Thumbnails */
-.manual-thumbs {
+/* 탭 */
+.tabs {
   display: flex;
-  gap: 8px;
-  padding: 12px 16px 16px;
-  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.tab {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #dbe7f5;
+  background: #fff;
+  color: #334155;
+  cursor: pointer;
+  font-weight: 700;
+}
+.tab.active {
+  background: #0077cc;
+  color: #fff;
+  border-color: #0077cc;
 }
 
-.thumb {
+/* 카드 */
+.manual-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+  overflow: hidden;
+  padding: 12px 12px 14px;
+}
+
+/* 상단 컨트롤 */
+.manual-controls.manual-controls--top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px 10px;
+  justify-content: flex-end;
+}
+
+/* 버튼/진행 */
+.btn { padding: 0.6rem 0.9rem; border-radius: 6px; font-weight: 700; cursor: pointer; border: 1px solid #d1d5db; background:#fff; }
+.btn:hover { background:#f7fbff; }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+.btn-primary { background:#0077cc; color:#fff; border-color:#0073c4; }
+.btn-primary:hover { background:#005fa3; }
+.manual-progress { color:#334155; font-weight: 700; }
+
+/* 본문 이미지 */
+.manual-stage {
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  background: #f9fafb;
+  min-height: 420px;
+}
+.manual-image {
+  max-width: 100%;
+  height: auto;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  padding: 4px;
   background: #fff;
+}
+
+/* 설명 */
+.manual-description { padding: 12px 8px 4px; }
+.manual-step-title { margin: 0 0 6px 0; font-size: 1rem; color:#0f3b62; }
+.manual-step-desc { font-size: .95rem; color:#334155; line-height: 1.6; }
+
+/* 썸네일 바 */
+.manual-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 4px 2px;
+}
+.thumb {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  padding: 2px;
   cursor: pointer;
 }
+.thumb.active { outline: 2px solid #0077cc; }
+.thumb img { display: block; height: 46px; width: auto; }
 
-.thumb img {
-  width: 90px;
-  height: 54px;
-  object-fit: cover;
-  display: block;
-  border-radius: 6px;
+/* =========================
+   무한 "클릭" 애니메이션
+   ========================= */
+
+/* 포인터 래퍼: 버튼 우상단에 배치 */
+.next-wrapper {
+  position: relative;
+  display: inline-block;
+}
+.next-pointer-wrap {
+  position: absolute;
+  right: -23px;
+  top: 15px;
+  width: 56px;
+  height: 56px;
+  pointer-events: none;
 }
 
-.thumb.active {
-  border-color: #0077cc;
-  box-shadow: 0 0 0 2px rgba(0, 119, 204, 0.15);
+/* 포인터 눌림/복귀 모션(무한) */
+@keyframes pointer-click {
+  0%   { transform: scale(1) translateY(0); }
+  10%  { transform: scale(0.94) translateY(2px); } /* 눌림 */
+  20%  { transform: scale(1) translateY(0); }      /* 복귀 */
+  100% { transform: scale(1) translateY(0); }
 }
 
-/* 안내 박스 */
-.manual-help {
-  margin-top: 12px;
-  color: #374151;
-  font-size: 0.95rem;
+/* 클릭 링(파동) – 포인터 클릭 주기와 맞춤 */
+@keyframes click-wave {
+  0%   { transform: scale(0); opacity: 0.55; }
+  45%  { transform: scale(1.5); opacity: 0.28; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+.click-ring {
+  position: absolute;
+  left: 10px;   /* 포인터 끝(클릭 지점) 근처 */
+  top: 10px;
+  width: 26px;
+  height: 26px;
+  margin-left: -13px;
+  margin-top: -13px;
+  border-radius: 999px;
+  border: 2px solid #ff1a1a; /* 링 컬러 */
+  animation: click-wave 1.2s ease-out infinite;
+}
+
+.next-pointer-cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 48px;         /* 이미지 상황에 맞게 조정 */
+  height: 48px;
+  object-fit: contain;
+  transform-origin: 18px 36px; /* "포인터 끝"로 보이는 부분을 기준점으로 */
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+  animation: pointer-click 1.2s ease-in-out infinite;
 }

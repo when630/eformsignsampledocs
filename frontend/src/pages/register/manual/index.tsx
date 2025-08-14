@@ -1,16 +1,22 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import './style.css';
 
 /** 각 단계(step) 타입 */
 type Step = {
-  img: string;        // 이미지 경로(예: /assets/manual/api/01.png)
+  img: string;        // 이미지 경로(예: /manual/api/01.png)
   alt?: string;
   title?: string;
   desc?: React.ReactNode;
 };
 
-/** 공통 Step 뷰어 */
-function StepViewer({ steps }: { steps: Step[] }) {
+/** StepViewer Props */
+type StepViewerProps = {
+  steps: Step[];
+  pointerImg?: string;
+};
+
+/** 공통 Step 뷰어 (상단 컨트롤 + 무한 클릭 애니메이션 가이드) */
+function StepViewer({ steps, pointerImg }: StepViewerProps) {
   const [idx, setIdx] = useState(0);
   const total = steps.length;
   const cur = steps[idx];
@@ -18,71 +24,78 @@ function StepViewer({ steps }: { steps: Step[] }) {
   const go = (n: number) => setIdx((i) => Math.min(Math.max(i + n, 0), total - 1));
   const set = (i: number) => setIdx(i);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') go(-1);
-      if (e.key === 'ArrowRight') go(1);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [total]);
-
   return (
-  <section className="manual-card" aria-label="manual step viewer">
+    <section className="manual-card" aria-label="manual step viewer">
+      {/* 상단 컨트롤 (이전/다음) */}
+      <div className="manual-controls manual-controls--top">
+        <button
+          className="btn"
+          onClick={() => go(-1)}
+          disabled={idx === 0}
+          aria-label="이전 단계"
+        >
+          ← 이전
+        </button>
 
-    {/* 버튼을 이미지 위로 이동 */}
-    <div className="manual-controls top-controls">
-      <button
-        className="btn"
-        onClick={() => go(-1)}
-        disabled={idx === 0}
-        aria-label="이전 단계"
-      >
-        ← 이전
-      </button>
-      <div className="manual-progress">
-        {idx + 1} / {total}
-      </div>
-      <button
-        className="btn btn-primary"
-        onClick={() => go(1)}
-        disabled={idx === total - 1}
-        aria-label="다음 단계"
-      >
-        다음 →
-      </button>
-    </div>
+        <div className="manual-progress">
+          {idx + 1} / {total}
+        </div>
 
-    <div className="manual-stage">
-      <img
-        src={cur.img}
-        alt={cur.alt || cur.title || `step-${idx + 1}`}
-        className="manual-image"
-      />
-    </div>
-
-    <div className="manual-description">
-      {cur.title && <h3 className="manual-step-title">{cur.title}</h3>}
-      {cur.desc && <div className="manual-step-desc">{cur.desc}</div>}
-    </div>
-
-    {total > 1 && (
-      <div className="manual-thumbs" role="listbox" aria-label="단계 썸네일">
-        {steps.map((s, i) => (
+        <div className="next-wrapper">
           <button
-            key={i}
-            className={`thumb ${i === idx ? 'active' : ''}`}
-            onClick={() => set(i)}
-            aria-selected={i === idx}
-            title={s.title || `step-${i + 1}`}
+            className="btn btn-primary"
+            onClick={() => go(1)}
+            disabled={idx === total - 1}
+            aria-label="다음 단계"
           >
-            <img src={s.img} alt={s.alt || s.title || `thumb-${i + 1}`} />
+            다음 →
           </button>
-        ))}
+
+          {/* 무한 클릭 가이드 (마지막 단계에서는 표시 안 함) */}
+          {pointerImg && idx < total - 1 && (
+            <div className="next-pointer-wrap" aria-hidden="true">
+              {/* 클릭 링(파동) – 버튼 주변에서 지속적으로 퍼짐 */}
+              <span className="click-ring" />
+              {/* 포인터/커서 이미지 – 살짝 눌렀다 떼는 모션 무한 반복 */}
+              <img src={pointerImg} alt="" className="next-pointer-cursor" />
+            </div>
+          )}
+        </div>
       </div>
-    )}
-  </section>
-);
+
+      {/* 본문 이미지 */}
+      <div className="manual-stage">
+        <img
+          src={cur.img}
+          alt={cur.alt || cur.title || `step-${idx + 1}`}
+          className="manual-image"
+        />
+      </div>
+
+      {/* 캡션 */}
+      <div className="manual-description">
+        {cur.title && <h3 className="manual-step-title">{cur.title}</h3>}
+        {cur.desc && <div className="manual-step-desc">{cur.desc}</div>}
+      </div>
+
+      {/* 썸네일 네비 */}
+      {total > 1 && (
+        <div className="manual-thumbs" role="listbox" aria-label="단계 썸네일">
+          {steps.map((s, i) => (
+            <button
+              key={i}
+              className={`thumb ${i === idx ? 'active' : ''}`}
+              onClick={() => set(i)}
+              aria-selected={i === idx}
+              title={s.title || `step-${i + 1}`}
+            >
+              <img src={s.img} alt={s.alt || s.title || `thumb-${i + 1}`} />
+            </button>
+          ))}
+        </div>
+      )}
+    </section>
+  );
 }
 
 /** 탭 컴포넌트 */
@@ -126,46 +139,14 @@ const ManualPage: React.FC = () => {
 
   const apiSteps: Step[] = useMemo(
     () => [
-      {
-        img: 'manual/mainpage.png',
-        title: '이폼사인 메인페이지 접속 및 메뉴 오픈',
-        desc: <>eformsign 메인페이지에서 메뉴를 열어주세요.</>
-      },
-      {
-        img: 'manual/menu_open.png',
-        title: '사이드 메뉴 열기',
-        desc: <>사이드 메뉴를 스크롤하여 아래로 내려주세요.</>
-      },
-      {
-        img: 'manual/menu_open_scrolldown_api.png',
-        title: '커넥트 메뉴 열기',
-        desc: <> <strong>커넥트</strong> 메뉴를 눌러 케넥트 메뉴를 열어주세요.</>
-      },
-      {
-        img: 'manual/menu_open_connect.png',
-        title: 'API / Webhook 메뉴 클릭',
-        desc: <> <strong>API / Webhook</strong> 메뉴를 눌러 API 페이지를 열어주세요.</>
-      },
-      {
-        img: 'manual/api_webhook_page.png',
-        title: 'API 키 생성',
-        desc: <> <strong>API 키 생성</strong>을 눌러 API 키를 생성합니다.</>
-      },
-      {
-        img: 'manual/making_key.png',
-        title: 'API 키 생성 상세 내용',
-        desc: <>별칭, 애플리케이션 이름, 값(secret key)를 입력해주시고 검증 유형을 반드시 <strong>"Bearer token"</strong>으로 해주세요. 그리고 <strong>저장</strong>을 눌러 키를 생성해주세요.</>
-      },
-      {
-        img: 'manual/after_make_key.png',
-        title: 'API 키 생성 후',
-        desc: <>키를 생성 하신 후 <strong>키 보기</strong>를 눌러 API 키와 secret 키를 확인해주세요.</>
-      },
-      {
-        img: 'manual/api_view_key.png',
-        title: 'API 키 및 secret 키 확인',
-        desc: <> <strong>복사</strong> 버튼을 눌러 <strong>API 키</strong>와 <strong>비밀 키</strong>를 회원가입 페이지에 기입해주세요.</>
-      },
+      { img: 'manual/mainpage.png', title: '이폼사인 메인페이지 접속 및 메뉴 오픈', desc: <>eformsign 메인페이지에서 메뉴를 열어주세요.</> },
+      { img: 'manual/menu_open.png', title: '사이드 메뉴 열기', desc: <>사이드 메뉴를 스크롤하여 아래로 내려주세요.</> },
+      { img: 'manual/menu_open_scrolldown_api.png', title: '커넥트 메뉴 열기', desc: <> <strong>커넥트</strong> 메뉴를 눌러 케넥트 메뉴를 열어주세요.</> },
+      { img: 'manual/menu_open_connect.png', title: 'API / Webhook 메뉴 클릭', desc: <> <strong>API / Webhook</strong> 메뉴를 눌러 API 페이지를 열어주세요.</> },
+      { img: 'manual/api_webhook_page.png', title: 'API 키 생성', desc: <> <strong>API 키 생성</strong>을 눌러 API 키를 생성합니다.</> },
+      { img: 'manual/making_key.png', title: 'API 키 생성 상세 내용', desc: <>별칭, 애플리케이션 이름, 값(secret key)를 입력해주시고 검증 유형을 반드시 <strong>"Bearer token"</strong>으로 해주세요. 그리고 <strong>저장</strong>을 눌러 키를 생성해주세요.</> },
+      { img: 'manual/after_make_key.png', title: 'API 키 생성 후', desc: <>키를 생성 하신 후 <strong>키 보기</strong>를 눌러 API 키와 secret 키를 확인해주세요.</> },
+      { img: 'manual/api_view_key.png', title: 'API 키 및 secret 키 확인', desc: <> <strong>복사</strong> 버튼을 눌러 <strong>API 키</strong>와 <strong>비밀 키</strong>를 회원가입 페이지에 기입해주세요.</> },
     ],
     []
   );
@@ -204,8 +185,18 @@ const ManualPage: React.FC = () => {
 
       <Tabs<TabKey> tabs={tabs} value={tab} onChange={setTab} />
 
-      {tab === 'API' && <StepViewer steps={apiSteps} />}
-      {tab === 'COMPANY' && <StepViewer steps={companySteps} />}
+      {tab === 'API' && (
+        <StepViewer
+          steps={apiSteps}
+          pointerImg="manual/cursor.png"
+        />
+      )}
+      {tab === 'COMPANY' && (
+        <StepViewer
+          steps={companySteps}
+          pointerImg="manual/cursor.png"
+        />
+      )}
     </div>
   );
 };
