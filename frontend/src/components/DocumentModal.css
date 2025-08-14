@@ -1,8 +1,26 @@
-/* ───────── Overlay (Legal 스타일 톤) ───────── */
+/* ───────── Base Tokens ───────── */
+:root {
+  --overlay-bg: rgba(17, 24, 39, 0.55);
+  --border: #e5e7eb;
+  --border-soft: #f0f0f0;
+  --text: #111827;
+  --text-sub: #555;
+  --brand: #0077cc;
+  --brand-hover: #005fa3;
+  --card-bg: #fff;
+  --muted-bg: #f9f9f9;
+  --shadow-lg: 0 12px 28px rgba(0,0,0,0.18);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --radius: 10px;
+  --radius-sm: 6px;
+  --gap: 1rem;
+}
+
+/* ───────── Overlay ───────── */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(17, 24, 39, 0.5);
+  background: var(--overlay-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,41 +28,40 @@
   z-index: 1000;
 }
 
-/* ───────── Modal Box ───────── */
+/* ───────── Modal Box (가로폭 축소 + 명시 높이) ───────── */
 .modal-content {
-  max-height: 90vh;
-  background: #ffffff;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
+  width: clamp(320px, 86vw, 640px);
+  height: min(85vh, 760px);        /* 명시 높이로 내부 레이아웃 안정화 */
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  box-shadow: var(--shadow-lg);
 }
 
-/* ───────── Header (화이트 배경 + 하단 보더) ───────── */
+/* ───────── Header ───────── */
 .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: .75rem;
   padding: 12px 16px;
-  background: #ffffff !important;
-  border-bottom: 1px solid #f0f0f0;
-  color: #111827;
+  background: #fff !important;
+  border-bottom: 1px solid var(--border-soft);
+  color: var(--text);
   font-weight: 700;
 }
-
-/* 타이틀을 파란 포인트 컬러로 */
-.modal-header>span {
+.modal-header > span {
   margin: 0;
   font-size: 1rem;
   font-weight: 700;
-  color: #0077cc;
+  color: var(--brand);
   line-height: 1.2;
 }
 
-/* ───────── Close Button (hover 시 연파랑 배경) ───────── */
+/* ───────── Close Button ───────── */
 .close-button {
   background: transparent;
   border: none;
@@ -54,129 +71,137 @@
   line-height: 1;
   cursor: pointer;
   color: #555;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
+  transition: background-color .2s ease, color .2s ease, transform .08s ease;
 }
-
-.close-button:hover {
-  background: #f0f8ff;
-  color: #005fa3;
-}
+.close-button:hover { background: #f0f8ff; color: var(--brand-hover); }
+.close-button:active { transform: scale(0.98); }
+.close-button:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 
 /* ───────── Body ───────── */
 .modal-body {
-  width: 50vh;
-  padding: 14px 16px;
-  text-align: center;
+  flex: 1 1 auto;
+  min-height: 0;          /* flex 자식들의 높이 계산을 위해 필수 */
+  padding: 16px;
+  overflow: hidden;       /* 본문 스크롤 제거 */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;   /* 가로 폭을 꽉 채우도록 */
 }
 
-.modal-body .legal-card {
-  margin: 8px 0;
-  padding: 14px 16px;
-  border: 1px solid #cccccc;
-  border-radius: 8px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+/* ───────── Thumbnail Area ───────── */
+.thumbnail-wrap {
+  flex: 1 1 auto;         /* 남는 높이를 최대한 사용 */
+  min-height: 0;          /* 자식의 100% 높이 계산을 위해 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
 }
 
-/* 썸네일 */
 .modal-thumbnail {
+  max-width: 100%;
+  max-height: calc(100% - 2px);   /* 테두리로 인한 1~2px 잘림 방지 */
   width: auto;
-  max-height: 60vh;
   height: auto;
-  object-fit: contain;
+  object-fit: contain;            /* 비율 유지하며 컨테이너에 맞춤 */
+  display: block;
+  margin: 0 auto;
   border: 1px solid #ddd;
   border-radius: 6px;
 }
 
-/* ───────── Footer (우측 정렬 + 보더 탑) ───────── */
+/* ───────── Card (본문) ───────── */
+.modal-body .legal-card {
+  flex: 0 0 auto;                 /* 내용만큼만 차지 */
+  max-width: 600px;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 12px auto 0;
+  padding: 14px 16px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+}
+
+/* ───────── Footer ───────── */
 .modal-footer {
   padding: 12px 16px;
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border-soft);
+  background: #fff;
 }
-
-/* 버튼 토큰을 Legal 버튼 느낌으로 통일 */
 .modal-footer button {
-  padding: 0.6rem 0.9rem;
+  padding: .6rem .9rem;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-weight: 700;
   cursor: pointer;
   background: #f5f5f5;
-  color: #111827;
+  color: var(--text);
+  transition: background-color .2s ease, transform .08s ease;
 }
+.modal-footer button:hover { background: #e9e9e9; }
+.modal-footer button:active { transform: translateY(1px); }
+.modal-footer button:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.modal-footer .primary { background-color: var(--brand); color: #fff; }
+.modal-footer .primary:hover { background-color: var(--brand-hover); }
 
-.modal-footer button:hover {
-  background: #e9e9e9;
-}
-
-/* 메인 액션 버튼 (기존 .primary 클래스를 Legal 톤으로) */
-.modal-footer .primary {
-  background-color: #0077cc;
-  color: #ffffff;
-}
-
-.modal-footer .primary:hover {
-  background-color: #005fa3;
-}
-
-/* 상태 배지/디테일(필요 시 재사용할 수 있도록) */
+/* ───────── Status Badge ───────── */
 .status-badge {
   display: inline-block;
   padding: 2px 8px;
   border-radius: 999px;
-  font-size: 0.72rem;
+  font-size: .72rem;
   font-weight: 700;
   border: 1px solid #cccccc;
   white-space: nowrap;
 }
+.status-badge.ok  { color: #0a7d15; background: #e8f7ea; border-color: #bfe8c4; }
+.status-badge.not { color: #9a1414; background: #fdecec; border-color: #f5c4c4; }
 
-.status-badge.ok {
-  color: #0a7d15;
-  background: #e8f7ea;
-  border-color: #bfe8c4;
-}
-
-.status-badge.not {
-  color: #9a1414;
-  background: #fdecec;
-  border-color: #f5c4c4;
-}
-
-/* 저작권 영역 */
+/* ───────── Copyright ───────── */
 .copyright {
-  margin: 1rem;
-  padding: 0.75rem 1rem;
-  background-color: #f9f9f9;
+  flex: 0 0 auto;                 /* 내용만큼만 차지 */
+  max-width: 600px;               /* 내부 최대 폭 */
+  width: 100%;
+  box-sizing: border-box;
+
+  margin: 12px auto;              /* 좌우 auto로 완전 중앙 + 상하 여백 */
+  padding: 0.75rem 1rem;          /* 내부 여백 (요청대로 유지) */
+
+  background-color: var(--muted-bg);
   border: 1px solid #e5e5e5;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
+
   font-size: 0.9rem;
-  line-height: 1.5;
+  line-height: 1.55;
   color: #444;
+
   white-space: pre-wrap;
   word-wrap: break-word;
-  width: 50vh;
+  text-align: left;
 }
-
-/* 기관명 링크 */
 .copyright a {
   display: inline-block;
   font-weight: 600;
   color: #0066cc;
-  /* 파란색 링크 */
   text-decoration: none;
-  margin-bottom: 0.25rem;
+  margin-bottom: .25rem;
 }
+.copyright a:hover { text-decoration: underline; }
+.copyright p { margin: 0; font-size: .88rem; color: #555; }
 
-.copyright a:hover {
-  text-decoration: underline;
-}
-
-/* displayText 문구 */
-.copyright p {
-  margin: 0;
-  font-size: 0.88rem;
-  color: #555;
+/* ───────── Responsiveness ───────── */
+@media (max-width: 560px) {
+  .modal-content { height: min(90vh, 720px); }
+  .modal-header, .modal-footer { padding: 10px 12px; }
+  .modal-body { padding: 12px; }
+  .modal-footer { gap: 6px; }
+  .modal-footer button { padding: .55rem .8rem; }
 }

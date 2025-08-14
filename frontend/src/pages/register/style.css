@@ -121,13 +121,10 @@
   cursor: not-allowed;
 }
 
-.manual-caption {
+.register-manual-caption {
   font-size: 0.8rem;
   font-weight: bold;
   color: #0077cc;
-  margin-left: -4%;
-  margin-bottom: 0%;
-  margin-top: 0%;
   text-align: left;
 }
 

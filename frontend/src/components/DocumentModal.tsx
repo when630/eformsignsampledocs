@@ -99,11 +99,13 @@ const DocumentModal = ({ document, onClose }: Props) => {
         </div>
 
         <div className="modal-body">
-          <img
-            src={`http://localhost:8080/api/documents/thumbnail/${document.storageId}`}
-            alt="썸네일"
-            className="modal-thumbnail"
-          />
+          <div className="thumbnail-wrap">
+            <img
+              src={`http://localhost:8080/api/documents/thumbnail/${document.storageId}`}
+              alt="썸네일"
+              className="modal-thumbnail"
+            />
+          </div>
         </div>
 
         <div className="copyright" aria-live="polite">

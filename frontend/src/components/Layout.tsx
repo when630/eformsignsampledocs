@@ -5,13 +5,11 @@ import './Layout.css';
 
 const Layout = ({ children, onCategoryClick }: { children: React.ReactNode, onCategoryClick: (id: number) => void }) => {
   return (
-    <div className='layout-container' style={{ display: 'flex', margin: '5px'}}>
+    <div className="layout-container">
       <SideBar onCategoryClick={onCategoryClick} />
-      <div style={{ flex: 1 }}>
+      <div className="content-column">
         <Header />
-        <div className='content-area'>
-          {children}
-        </div>
+        <div className="content-area">{children}</div>
       </div>
     </div>
   );

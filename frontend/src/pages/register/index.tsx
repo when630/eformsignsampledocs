@@ -72,7 +72,7 @@ const RegisterPage = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <p className="manual-caption">
+        <p className="register-manual-caption">
           ※ API를 먼저 생성해주셔야 됩니다.
           <button className='manual-link' onClick={openManual}> API 메뉴얼 보기 </button> <br />
         </p>
