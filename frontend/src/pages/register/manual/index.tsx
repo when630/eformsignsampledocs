@@ -61,7 +61,7 @@ function StepViewer({ steps }: { steps: Step[] }) {
       />
     </div>
 
-    <div className="manual-caption">
+    <div className="manual-description">
       {cur.title && <h3 className="manual-step-title">{cur.title}</h3>}
       {cur.desc && <div className="manual-step-desc">{cur.desc}</div>}
     </div>
