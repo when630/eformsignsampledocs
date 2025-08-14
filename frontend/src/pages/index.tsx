@@ -16,10 +16,8 @@ const MainPage = () => {
   const location = useLocation() as { state?: { categoryId?: number } };
   const navigate = useNavigate();
 
-  // 라우팅/세션 값 적용은 딱 1회만
   const appliedFromRouteRef = useRef(false);
 
-  // 1) 라우팅/세션 categoryId 1회 적용
   useEffect(() => {
     if (appliedFromRouteRef.current) return;
 
@@ -29,7 +27,6 @@ const MainPage = () => {
     if (stateId != null) {
       setSelectedCategoryId(Number(stateId));
       appliedFromRouteRef.current = true;
-      // location.state 비워서 반복 적용 방지
       navigate('.', { replace: true, state: {} });
       return;
     }
@@ -39,10 +36,8 @@ const MainPage = () => {
       appliedFromRouteRef.current = true;
       sessionStorage.removeItem('pendingCategoryId');
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 2) 선택된 카테고리 변경 시 문서/경로 로드
   useEffect(() => {
     if (selectedCategoryId === null) return;
 

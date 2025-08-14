@@ -18,7 +18,6 @@ function StepViewer({ steps }: { steps: Step[] }) {
   const go = (n: number) => setIdx((i) => Math.min(Math.max(i + n, 0), total - 1));
   const set = (i: number) => setIdx(i);
 
-  // ← / → 로 단계 이동
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') go(-1);
@@ -26,59 +25,64 @@ function StepViewer({ steps }: { steps: Step[] }) {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [total]);
 
   return (
-    <section className="manual-card" aria-label="manual step viewer">
-      <div className="manual-stage">
-        <img src={cur.img} alt={cur.alt || cur.title || `step-${idx + 1}`} className="manual-image" />
-      </div>
+  <section className="manual-card" aria-label="manual step viewer">
 
-      <div className="manual-caption">
-        {cur.title && <h3 className="manual-step-title">{cur.title}</h3>}
-        {cur.desc && <div className="manual-step-desc">{cur.desc}</div>}
+    {/* 버튼을 이미지 위로 이동 */}
+    <div className="manual-controls top-controls">
+      <button
+        className="btn"
+        onClick={() => go(-1)}
+        disabled={idx === 0}
+        aria-label="이전 단계"
+      >
+        ← 이전
+      </button>
+      <div className="manual-progress">
+        {idx + 1} / {total}
       </div>
+      <button
+        className="btn btn-primary"
+        onClick={() => go(1)}
+        disabled={idx === total - 1}
+        aria-label="다음 단계"
+      >
+        다음 →
+      </button>
+    </div>
 
-      <div className="manual-controls">
-        <button
-          className="btn"
-          onClick={() => go(-1)}
-          disabled={idx === 0}
-          aria-label="이전 단계"
-        >
-          ← 이전
-        </button>
-        <div className="manual-progress">
-          {idx + 1} / {total}
-        </div>
-        <button
-          className="btn btn-primary"
-          onClick={() => go(1)}
-          disabled={idx === total - 1}
-          aria-label="다음 단계"
-        >
-          다음 →
-        </button>
+    <div className="manual-stage">
+      <img
+        src={cur.img}
+        alt={cur.alt || cur.title || `step-${idx + 1}`}
+        className="manual-image"
+      />
+    </div>
+
+    <div className="manual-description">
+      {cur.title && <h3 className="manual-step-title">{cur.title}</h3>}
+      {cur.desc && <div className="manual-step-desc">{cur.desc}</div>}
+    </div>
+
+    {total > 1 && (
+      <div className="manual-thumbs" role="listbox" aria-label="단계 썸네일">
+        {steps.map((s, i) => (
+          <button
+            key={i}
+            className={`thumb ${i === idx ? 'active' : ''}`}
+            onClick={() => set(i)}
+            aria-selected={i === idx}
+            title={s.title || `step-${i + 1}`}
+          >
+            <img src={s.img} alt={s.alt || s.title || `thumb-${i + 1}`} />
+          </button>
+        ))}
       </div>
-
-      {total > 1 && (
-        <div className="manual-thumbs" role="listbox" aria-label="단계 썸네일">
-          {steps.map((s, i) => (
-            <button
-              key={i}
-              className={`thumb ${i === idx ? 'active' : ''}`}
-              onClick={() => set(i)}
-              aria-selected={i === idx}
-              title={s.title || `step-${i + 1}`}
-            >
-              <img src={s.img} alt={s.alt || s.title || `thumb-${i + 1}`} />
-            </button>
-          ))}
-        </div>
-      )}
-    </section>
-  );
+    )}
+  </section>
+);
 }
 
 /** 탭 컴포넌트 */
@@ -119,12 +123,6 @@ const ManualPage: React.FC = () => {
   })();
 
   const [tab, setTab] = useState<TabKey>(initialTab);
-
-  // 새창 유틸: 회원가입 열기 / 창 닫기
-  const openRegister = () => {
-    // 새창에서 회원가입 페이지 열기 (같은 팝업 안에서 이동)
-    window.location.href = '/register';
-  };
 
   const apiSteps: Step[] = useMemo(
     () => [

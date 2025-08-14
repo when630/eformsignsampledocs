@@ -38,9 +38,8 @@ const RegisterPage = () => {
 
   const openManual = () => {
     window.open(
-      '/register/manual', // 경로
-      '_blank',           // 새창
-      'width=1000,height=800,noopener,noreferrer' // 옵션
+      '/register/manual',
+      '_blank',
     );
   };
 
@@ -73,13 +72,9 @@ const RegisterPage = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <p className="register-caption">
-          <p>
-            ※ API를 먼저 생성해주셔야 됩니다.   
-            <button className='manual-link' onClick={openManual}> API 메뉴얼 보기 </button>
-          </p>
-          <br/>
-          ⓘ 커넥트 → API / Webhook → API 키 생성
+        <p className="manual-caption">
+          ※ API를 먼저 생성해주셔야 됩니다.
+          <button className='manual-link' onClick={openManual}> API 메뉴얼 보기 </button> <br />
         </p>
         <input
           className="register-input"
@@ -119,8 +114,8 @@ const RegisterPage = () => {
         <section className="legal-card" aria-labelledby="legal-title">
           <h3 id="legal-title" className="legal-title">서식에 관한 안내</h3>
           <p className="legal-text">
-            서식의 내용은 사용자가 수정, 보완, 삭제할 수 있으며, 이러한 변경이 이루어진 경우를 포함하여 해당 서식의 내용에 대하여 서식 제공자 및 이폼사인은 법적 효력을 보증하지 않습니다.<br/>
-            서식을 그대로 사용하거나, 수정·보완·삭제하여 사용함으로써 발생하는 분쟁 또는 손해(제3자와의 분쟁 및 손해를 포함)에 대하여 서식 제공자와 이폼사인은 법적 책임을 지지 않습니다.<br/>
+            서식의 내용은 사용자가 수정, 보완, 삭제할 수 있으며, 이러한 변경이 이루어진 경우를 포함하여 해당 서식의 내용에 대하여 서식 제공자 및 이폼사인은 법적 효력을 보증하지 않습니다.<br />
+            서식을 그대로 사용하거나, 수정·보완·삭제하여 사용함으로써 발생하는 분쟁 또는 손해(제3자와의 분쟁 및 손해를 포함)에 대하여 서식 제공자와 이폼사인은 법적 책임을 지지 않습니다.<br />
             사용자는 서식을 이폼사인 에디터 내에서만 사용할 수 있으며, 서식의 무단 유출, 배포 등 외부 사용은 엄격히 금지됩니다.
           </p>
 

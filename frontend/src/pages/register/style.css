@@ -116,23 +116,34 @@
   user-select: none;
 }
 
-/* 버튼 비활성화 시 기존 톤 유지 + 시각 피드백 */
 .register-button.is-disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.register-caption {
+.manual-caption {
   font-size: 0.8rem;
+  font-weight: bold;
   color: #0077cc;
+  margin-left: -4%;
+  margin-bottom: 0%;
+  margin-top: 0%;
+  text-align: left;
+}
+
+.register-caption {
+  font-size: 0.7rem;
+  color: #0077cc;
+  margin-top: 0%;
 }
 
 .manual-link {
   background-color: #ffffff;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   border: 1px solid #ffffff;
   text-decoration: underline;
   color: #0077cc;
+  font-weight: bold;
 }
 
 .manual-link:hover {
